@@ -1,0 +1,76 @@
+@urlDev=http://localhost:8000
+
+### get all job
+GET {{urlDev}}/job/list
+### get all job sort by date
+GET {{urlDev}}/job/list/sort-by-date
+### get one job
+GET {{urlDev}}/job/detail?id=63e10b903cd4b72a98d9380e
+id:63e10b903cd4b72a98d9380e
+
+### create job
+POST {{urlDev}}/job/create
+Content-Type: application/json
+
+{
+    "name":"Lập trình viên back-end",
+    "description":"Tham gia thiết kế giao diện, ...",
+    "requirement":"C#, ASP.NET Core",
+    "hourWorking":"40hrs/week Monday to Friday",
+    "postingDate":"2-6-2023",
+    "deadline":"12-31-2024",
+    "salary":"20000000",
+    "locationWorking":"Hồ Chí Minh",
+    "idOccupation":"64100616fdd527b2f096944a",
+    "idcompany":"63e1078c173cbae6b2487523"
+}
+### update job
+PUT {{urlDev}}/job/update
+Content-Type: application/json
+
+{
+    "name":"Lập trình viên back-end",
+    "description":"Tham gia thiết kế giao diện, ...",
+    "requirement":"C#, ASP.NET Core",
+    "hourWorking":"40hrs/week",
+    "postingDate":"2-6-2023",
+    "deadline":"12-31-2024",
+    "salary":"20000000",
+    "locationWorking":["Hà Nội, Hồ Chí Minh"],
+    "idOccupation":["64100616fdd527b2f096944a","6410061cfdd527b2f096944c"],
+    "idcompany":"63e1078c173cbae6b2487523"
+}
+### delete job
+DELETE {{urlDev}}/job/delete
+Content-Type: application/json
+
+{   
+    "_id":"63e10b903cd4b72a98d9380e"
+}
+
+### get all job of a company
+GET {{urlDev}}/job/list/company/641003eafe045f194923dc8a
+Content-Type: application/json
+
+### filter job
+### Có thể truyền vào body 1,2 hoặc cả 3 tham số
+GET {{urlDev}}/job/list/filter
+Content-Type: application/json
+
+{
+    "idOccupation" : ["64100616fdd527b2f096944a"],
+    "localWorking" : ["Hà Nội"],
+    "idCompany" : "",
+}
+
+
+POST {{urlDev}}/job/search
+Content-Type: application/json
+
+{
+    "key" : "",
+    "idOccupation" : ["64100616fdd527b2f096944a"],
+    "localWorking" : ["Hà Nội"],
+    "idCompany" : "",
+}
+

@@ -1,0 +1,27 @@
+@urlDev=http://localhost:8000
+
+### get all company
+GET {{urlDev}}/auth/all
+### get one company
+GET {{urlDev}}/company/list
+
+
+### create company
+POST {{urlDev}}/v1/users
+Content-Type: : application/json
+
+{
+    "key":"u:10001",
+    "payload":{
+        "uid":10001,
+        "name":"tanngoc"
+    }
+}
+### update company
+DELETE {{urlDev}}/company/delete
+
+Content-Type: application/json
+{
+    "id":"63e0867c70784567a709e8ea"
+}
+### delete company

@@ -1,0 +1,32 @@
+@urlDev=http://localhost:8000
+
+### get all occupation
+GET {{urlDev}}/occupation/list
+### get one occupation
+GET {{urlDev}}/occupation/detail?id=63e10b141d3a066c8f791543
+
+###
+GET {{urlDev}}/occupation/detail
+id:63e10b141d3a066c8f791543
+### get all occupation
+POST {{urlDev}}/occupation/create
+Content-Type: application/json
+
+{
+    "name":"First occupation"
+}
+### get all occupation
+PUT {{urlDev}}/occupation/update
+Content-Type: application/json
+
+{
+    "_id":"63e10b141d3a066c8f791543",
+    "name":"Third occupation update"
+}
+###  delete occupation
+DELETE {{urlDev}}/occupation/delete
+Content-Type: application/json
+
+{
+    "_id":"63e10b251d3a066c8f791547"
+}

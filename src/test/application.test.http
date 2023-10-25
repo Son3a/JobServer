@@ -1,0 +1,16 @@
+@urlDev=http://localhost:8000
+### get all application
+GET  {{urlDev}}/application/list?idCompany=63e10717173cbae6b2487520
+### get all application ()
+### GET  {{urlDev}}/application/detail
+### application job
+POST {{urlDev}}/application/create
+Content-Type: : multipart/form-data
+
+{
+    "idJobSeeker":"63dfb79ce2b2004977bc1b07",
+    "idJob":"63e10717173cbae6b2487520",
+    "cv":"cvtest",
+    "submitDate":"2023-02-07T12:41:12.123Z"
+}
+

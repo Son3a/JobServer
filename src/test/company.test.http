@@ -1,0 +1,47 @@
+@urlDev=http://localhost:8000
+
+### get all company
+GET {{urlDev}}/company/list
+
+Authorization: bearber eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2UwODY3YzcwNzg0NTY3YTcwOWU4ZWEiLCJyb2xlIjoidXNlciIsImlhdCI6MTY3NjM1MDE3MiwiZXhwIjoxNjc2MzUwMjMyfQ.OOgD-Dbr-gyoOiwXL_kfk5BsiPh3V3jWDUF_12pf5yc
+### get one company
+GET {{urlDev}}/company/detail?id=63e10717173cbae6b2487520
+
+
+### create company
+POST {{urlDev}}/company/create
+Content-Type: : application/json
+
+{
+    "name":"FPT Software",
+    "totalEmployee":10000,
+    "type":"software, outsource",
+    "about":"top company about technology in Viet Nam",
+    "phone":"033947586",
+    "location":"Ho Chi Minh, Ha Noi",
+    "isDelete": "false",
+    "idUser":"63dfb79ce2b2004977bc1b07"
+}
+
+
+### update company
+PUT {{urlDev}}/company/update
+Content-Type: application/json
+
+{
+    "_id":"63e10717173cbae6b2487520",
+    "name":"Third company update",
+    "totalEmployee":100,
+    "type":"good",
+    "about":"me",
+    "phone":"033947586",
+    "location":"hihi",
+    "idUser":"63dfb79ce2b2004977bc1b07"
+}
+### delete company
+DELETE {{urlDev}}/company/delete
+Content-Type: application/json
+
+{
+    "id":"63e10717173cbae6b2487520"
+}

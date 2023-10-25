@@ -1,0 +1,968 @@
+openapi: 3.0.0
+info:
+  title: JobSeeker API
+  description: Dat Ngoc Ngan Ba Nghia.
+  version: 0.1.9
+servers:
+  - url: http://localhost:8000
+    description: My local server.
+  - url: https://job-seeker-smy5.onrender.com
+    description: Server is deloyed.
+tags:
+  - name: Auth 
+    description: Authentication and authorization.
+  - name: Job
+    description: Job manage.
+  - name: Company
+    description: Company manage.
+  - name: Application
+    description: Application for job.
+  - name: Occupation
+    description: Occupation manage.
+  - name: Statistical
+    description: Statistical information.
+paths:
+  /auth/info-user: 
+      get:
+        tags:
+          - Auth
+        summary: Get User
+        responses:
+          '200':
+            description: 'Get Successfully.'
+          '500':
+            description: 'Get user false !!!'
+        security:
+        - Bearer: string
+  /auth/login: 
+    post:
+      tags:
+        - Auth
+      summary: Login
+      requestBody:
+        description: Login by email
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auth'
+        required: true
+      responses:
+        '200':
+          description: 'Login Successfully.'
+        '401':
+          description: 'Invalid email address or phone number!'
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register
+      requestBody:
+        description: Create user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegister'
+        required: true
+      responses:
+        '200':
+          description: 'Login Successfully.'
+        '401':
+          description: 'Invalid email address or phone number!'
+  /auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Recovery password
+      requestBody:
+        description: reset password by email
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example : 'thudatdl123@gmail.com'
+        required: true
+      responses:
+        '200':
+          description: 'Send mail successfully.'
+        '500':
+          description: 'Send mail false !!!'
+  /auth/refresh-token:
+    post:
+      tags:
+        - Auth
+      summary: create new refresh token
+      requestBody:
+        description: create new refresh token
+        content:
+          application/json:
+            schema:
+              properties:
+                _id:
+                  type: string
+                role:
+                  type: string
+                  example : 'user'
+        required: true
+      responses:
+        '200':
+          description: 'create new refresh token successfully.'
+        '500':
+          description: 'create new refresh token false!!!'
+      security:
+        - Bearer: string
+
+  /auth/confirm-password:
+    put:
+      tags:
+        - Auth
+      summary: set new password
+      requestBody:
+        description: set new password
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  example : 'thudatdl123@gmail.com'
+                newPassword:
+                  type: string
+                  example : 'ThudatDepTrai123'
+                confirmPasswordCode:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: 'Set new password successfully.'
+        '500':
+          description: 'Set new password false!!!'
+
+  /auth/change-password:
+    put:
+      tags:
+        - Auth
+      summary: change password
+      requestBody:
+        description: change password
+        content:
+          application/json:
+            schema:
+              properties:
+                password:
+                  type: string
+                  example : 'thudatdz123'
+                newPassword:
+                  type: string
+                  example : 'thudatdz123'
+        required: true
+      responses:
+        '200':
+          description: 'change password successfully.'
+        '500':
+          description: 'change password false!!!'
+      security:
+        - Bearer: string
+  /auth/edit-profile:
+    put:
+      tags:
+        - Auth
+      summary: patch profile
+      requestBody:
+        description: patch profile
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example : 'TRAN THU DAT'
+                phone:
+                  type: string
+                  example : '0941374589'
+                email:
+                  type: string
+                  example: thudatdl123@gmail.com
+                avatar:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: 'patch profile successfully.'
+        '500':
+          description: 'patch profiled false!!!'
+      security:
+        - Bearer: string
+  
+  /auth/logout:
+    patch:
+      tags:
+        - Auth
+      summary: patch logout
+      responses:
+        '200':
+          description: 'Logout successfully.'
+        '500':
+          description: 'Logout false!!!'
+      security:
+        - Bearer: string
+  # job api
+  /job/list:
+    get:
+      tags:
+        - Job
+      summary: Get list Job
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: job page.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Get Successfully.'
+        '500':
+          description: 'Get user false !!!'
+  /job/search-by-key:
+    get:
+      tags:
+        - Job
+      summary: Get Job By Keyword
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          description: keyword.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Get Successfully.'
+        '500':
+          description: 'Get user false !!!'
+  /job/list/sort-by-date:
+    get:
+      tags:
+        - Job
+      summary: Get Job sort by date
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /job/list/all-moderator-job:
+    get:
+      tags:
+        - Job
+      summary: Get Job can moderator
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /job/detail:
+    get:
+      tags:
+        - Job
+      summary: Get Detail Job
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Comapny id.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /job/list/company/{id}:
+    get:
+      tags:
+        - Job
+      summary: Get Job
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Comapny id.
+          schema:
+            type : string
+        - name: name
+          in: query
+          required: true
+          description: Comapny nanme.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Get Successfully.'
+        '500':
+          description: 'Get user false !!!'
+  /job/create:
+    post:
+      tags:
+        - Job
+      summary: Create
+      requestBody:
+        description: Create job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+        required: true
+      responses:
+        '200':
+          description: 'Create job success'
+        '401':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /job/list/search:
+    post:
+      tags:
+        - Job
+      summary: Delete Job
+      requestBody:
+        description: search job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchJob'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /job/update:
+    put:
+      tags:
+        - Job
+      summary: Update
+      requestBody:
+        description: Update job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Job'
+        required: true
+      responses:
+        '200':
+          description: 'Update job success'
+        '401':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /job/delete:
+    patch:
+      tags:
+        - Job
+      summary: Delete Job
+      requestBody:
+        description: Delete job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Delete'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /job/list-job-favourite:
+    patch:
+      tags:
+        - Job
+      summary: Add or remove list job favourite
+      requestBody:
+        description : Add or remove list job favourite
+        content:
+          application/json:
+            schema:
+              properties:
+                jobId:
+                  type: string
+      responses:
+        '200':
+          description: 'Get Successfully.'
+        '500':
+          description: 'Get user false !!!'
+      security:
+      - Bearer: string
+#COMPANY API
+  /company/list:
+    get:
+      tags:
+        - Company
+      summary: Get Company
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Comapny page.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /company/list/{name}:
+    get:
+      tags:
+        - Company
+      summary: Get Company by search key
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Comapny suggest name.
+          schema:
+            type : string
+        - name: page
+          in: query
+          required: false
+          description: Comapny page number.
+          schema:
+            type : number
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /company/detail:
+    get:
+      tags:
+        - Company
+      summary: Get Company
+      parameters:
+        - name: id
+          in: query
+          required: true
+          description: Comapny id.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /company/create:
+    post:
+      tags:
+        - Company
+      summary: Create Company
+      requestBody:
+        description: Create Company
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /company/update:
+    put:
+      tags:
+        - Company
+      summary: Update Company
+      requestBody:
+        description: Update Company
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Company'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /company/delete:
+    delete:
+      tags:
+        - Company
+      summary: Delete Company
+      requestBody:
+        description: Delete company
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Delete'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+#APPLICATION
+  /application/list:
+    get:
+      tags:
+        - Application
+      summary: Get Application
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/get-by-jobid:
+    get:
+      tags:
+        - Application
+      summary: Get Application
+      parameters:
+        - name: jobid
+          in: query
+          required: true
+          description: application id.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/detail:
+    get:
+      tags:
+        - Application
+      summary: Get Application
+      requestBody:
+        description: Application detail
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Delete'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/get-by-userid:
+    get:
+      tags:
+        - Application
+      summary: Get Application
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/create:
+    post:
+      tags:
+        - Application
+      summary: Create Application
+      requestBody:
+        description: Delete job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/list:
+    get:
+      tags:
+        - Application
+      summary: Get Application
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /application/company:
+    get:
+      tags:
+        - Application
+      summary: Get Application By Company Id
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+ #OCCUPATION 
+  /occupation/list:
+    get:
+      tags:
+        - Occupation
+      summary: Get Occupation
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /occupation/detail/{id}:
+    get:
+      tags:
+        - Occupation
+      summary: Get Occupation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: application id.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+  /occupation/create:
+    post:
+      tags:
+        - Occupation
+      summary: Create Occupation
+      requestBody:
+        description: Create occupation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Occupation'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /occupation/update:
+    put:
+      tags:
+        - Occupation
+      summary: Update Occupation
+      requestBody:
+        description: Delete job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Occupation'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+  /occupation/delete:
+    delete:
+      tags:
+        - Occupation
+      summary: Delete Occupation
+      requestBody:
+        description: Delete job
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Delete'
+        required: true
+      responses:
+        '200':
+          description: 'Successfully.'
+        '500':
+          description: 'Failed'
+      security:
+        - Bearer: string
+#STATISTICAL
+  /job/statistical/job-by-occupation:
+    get:
+      tags: 
+        - Statistical
+      summary: statistical method
+      responses:
+        '200':
+          description: 'Successfull'
+        '500':
+          description: 'Failed'
+  /job/statistical/list-new-job:
+    get:
+      tags: 
+        - Statistical
+      summary: statistical method
+      responses:
+        '200':
+          description: 'Successfull'
+        '500':
+          description: 'Failed'
+  /job/statistical/custom-statistical:
+    get:
+      tags: 
+        - Statistical
+      summary: statistical method
+      parameters:
+        - name: option
+          in: query
+          required: true
+          description: option.
+          schema:
+            type : string
+      responses:
+        '200':
+          description: 'Successfull'
+        '500':
+          description: 'Failed'
+  /job/statistical/application-by-occupation:
+    get:
+      tags: 
+        - Statistical
+      summary: statistical method
+      responses:
+        '200':
+          description: 'Successfull'
+        '500':
+          description: 'Failed'
+  /job/statistical/most-application-job:
+    get:
+      tags: 
+        - Statistical
+      summary: statistical method
+      responses:
+        '200':
+          description: 'Successfull'
+        '500':
+          description: 'Failed'
+#COMPONENT:
+components:
+  schemas:
+    Auth:
+      type: object
+      properties:
+        username:
+          type: string
+          example: thudatdl123@gmail.com
+        password:
+          type: string
+          example: Thudat123@
+    AuthRegister:
+      type: object
+      required:
+        - username
+        - password
+        - name
+        - phone
+        - email
+        - username
+      properties:
+        username:
+          type: string
+          example: 'thudatdl123@gmail.com'
+        password:
+          type: string
+          example: Thudat123@
+        name:
+          type: string
+          example: Tran Dat
+        phone:
+          type: string
+          example : '0941374589'
+        email:
+          type: string
+        role: 
+          type: string
+          example: user
+          enum:
+            - user
+            - admin
+      securitySchemes:
+    Job:
+      type: object
+      required:
+        - id
+        - name
+        - requirement
+        - hourWorking
+        - deadline
+        - salary
+        - locationWorking
+        - idCompany
+        - idOccupation
+        - status
+        - description
+        - postingDate
+        - updateDate
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+          example: 'Lap trinh vien fullstack'
+        requirement:
+          type: string
+          example: 'NodeJs'
+        hourWorking:
+          type: string
+          example: '8 hour/day'
+        deadline:
+          type: string
+          example: 'dead line'
+        salary:
+          type: string
+          example: 'dead line'
+        locationWorking:
+          type: string
+          example: 'dead line'
+        idCompany:
+          type: string
+          example: 'dead line'
+        idOccupation:
+          type: string
+          example: 'idOccupation'
+        description:
+          type: string
+          example: 'description'
+        postingDate:
+          type: string
+          example: '04-12-2023'
+        updateDate:
+          type: string
+          example: '04-12-2023'
+        status:
+          type: boolean
+          example: true
+    Company:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+          example: thudatdl123@gmail.com
+        totalEmployee:
+          type: number
+          example: 500
+        type:
+          type: string
+          example: 'example'
+        about:
+          type: string
+          example: 'example'
+        phone:
+          type: string
+          example: 'example'
+        location:
+          type: string
+          example: 'example'
+        isDelete:
+          type: boolean
+          example: 'example'
+        createDate:
+          type: string
+          example: 'example'
+        idUser:
+          type: string
+          example: 'example'
+# DELETE SCHEMA          
+    Delete:
+      type: object
+      required:
+        - _id
+      properties:
+        _id:
+          type: string
+# SEARCH JOB SCHEMA          
+    SearchJob:
+      type: object
+      required:
+        - key
+        - idCompany
+        - idOccupation
+        - locationWorking
+      properties:
+        key:
+          type: string
+          example: 'webdevelopment'
+        idCompany:
+          type: string[]
+          example: []
+        idOccupation:
+          type: string[]
+          example: []
+        locationWorking:
+          type: string[]
+          example: []
+#APPLICATION 
+    Application:
+      type: object
+      required:
+        - idJobSeeker
+        - idJob
+        - cv
+        - submitDate
+      properties:
+        idJobSeeker:
+          type: string
+          example: id
+        idJob:
+          type: string
+          example: id
+        cv:
+          type: file
+        submitDate:
+          type: string
+          example: '04-15-2023'
+#OCCUPATION SCHEMA
+    Occupation:
+      type: object
+      required:
+        - _id
+        - name
+        - isDelete
+      properties:
+        _id:
+          type: string
+          example: _id
+        name:
+          type: string
+          example: name of occupation
+        isDelete:
+          type: boolean
+          example: false
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header 
+

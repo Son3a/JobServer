@@ -1,0 +1,23 @@
+@urlDev = http://localhost:8000
+### post signin
+POST {{urlDev}}/auth/login
+
+Content-Type: application/json
+{
+    "username":"tranthudat",
+    "password":"thudat123"
+}
+###
+POST {{urlDev}}/auth/register
+
+Content-Type: application/json
+{
+    "name":"hihi",
+    "phone":"0941374dff586",
+    "email":"nxghs@gmail.com",
+    "password":"123",
+    "avartar":"no avartar",
+    "username":"123456",
+    "role":"admin"
+}
+###

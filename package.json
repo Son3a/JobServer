@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "booking ",
+  "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
+  "scripts": {
+    "test": "nodemon --inspect index.js",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "booking",
+    "dat",
+    "and",
+    "team"
+  ],
+  "author": "trandat and team",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cloudinary": "^1.36.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "firebase": "^9.20.0",
+    "firebase-admin": "^11.8.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.7.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^4.6.0",
+    "yamljs": "^0.3.0"
+  }
+}
