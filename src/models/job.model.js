@@ -12,7 +12,6 @@ module.exports = class Job {
   #name
   #description
   #requirement
-  #hourWorking
   #postingDate
   #updateDate
   #deadline
@@ -20,12 +19,15 @@ module.exports = class Job {
   #locationWorking
   #idOccupation
   #idCompany
-  constructor(id, name, description, requirement, hourworking, postingdate, deadline, salary, locationworking, idoccupation, idcompany) {
+  #gender
+  #workingForm
+  #experience
+  #amount
+  constructor(id, name, description, requirement, postingdate, deadline, salary, locationworking, idoccupation, idcompany, amount, experience, workingForm, gender) {
     this.id = id
     this.#name = name
     this.#description = description
     this.#requirement = requirement
-    this.#hourWorking = hourworking
     this.#postingDate = postingdate
     this.#updateDate = new Date()
     this.#deadline = deadline
@@ -33,6 +35,10 @@ module.exports = class Job {
     this.#locationWorking = locationworking
     this.#idOccupation = idoccupation
     this.#idCompany = idcompany
+    this.#gender = gender
+    this.#workingForm = workingForm
+    this.#amount = amount
+    this.#experience = experience
   }
   create = () => {
     return new Promise(async (resolve, reject) => {
@@ -46,7 +52,6 @@ module.exports = class Job {
         job.name = this.#name
         job.description = this.#description
         job.requirement = this.#requirement
-        job.hourWorking = this.#hourWorking
         job.postingDate = this.#postingDate
         job.deadline = this.#deadline
         job.salary = this.#salary
@@ -55,6 +60,10 @@ module.exports = class Job {
         job.idOccupation = this.#idOccupation
         job.idCompany = this.#idCompany
         job.status = true
+        job.gender = this.#gender
+        job.experience = this.#experience
+        job.workingForm = this.#workingForm
+        job.amount = this.#amount
         job.save()
           .then((rel) => resolve(rel))
           .catch((err) => { reject(err) })

@@ -4,18 +4,21 @@ const jobSchema = require('../schemas/job.schema');
 const jwt = require('jsonwebtoken');
 const { uploadImage } = require('../services/uploadImage.service');
 module.exports.create = (req, res, next) => {
-  const { name, description, requirement, hourWorking, postingDate, deadline, salary, locationWorking, idOccupation, idCompany } = req.body;
+  const { name, description, requirement, postingDate, deadline, salary, locationWorking, idOccupation, idCompany, gender, experience, workingForm, amount } = req.body;
   new Job(undefined,
     name,
     description,
     requirement,
-    hourWorking,
     postingDate,
     deadline,
     salary,
     locationWorking,
     idOccupation,
-    idCompany)
+    idCompany,
+    amount,
+    experience,
+    workingForm,
+    gender)
     .create()
     .then(user => {
       res.status(200).json({ message: 'create job success', success: true, data: user })
@@ -46,7 +49,7 @@ module.exports.delete = (req, res, next) => {
   const { _id } = req.body
   console.log(req.body);
   new Job(
-    undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+    undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
   )
     .delete(_id)
     .then(rel => {
@@ -56,7 +59,7 @@ module.exports.delete = (req, res, next) => {
 }
 
 module.exports.updateOne = (req, res, next) => {
-  const { _id, name, description, requirement, hourWorking, postingDate, deadline, salary, locationWorking, idOccupation, idCompany } = req.body;
+  const { _id, name, description, requirement, hourWorking, postingDate, deadline, salary, locationWorking, idOccupation, idCompany, amount, gender, experience, workingForm } = req.body;
   const job = new jobSchema()
   job._id = _id
   job.name = name
@@ -71,6 +74,10 @@ module.exports.updateOne = (req, res, next) => {
   job.locationWorking = locationWorking
   job.idOccupation = idOccupation
   job.idCompany = idCompany
+  job.amount = amount
+  job.experience = experience
+  job.workingForm = workingForm
+  job.gender = gender
   new Job()
     .update(job)
     .then((rel) => { res.status(200).json({ message: 'update job success', success: true, job: rel }) })

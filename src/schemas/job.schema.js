@@ -15,10 +15,6 @@ const jobSchema = new mongoose.Schema({
     type: String,
     require: true
   },
-  hourWorking: {
-    type: String,
-    require: true
-  },
   postingDate: {
     type: Date,
     require: true,
@@ -60,7 +56,23 @@ const jobSchema = new mongoose.Schema({
     type: Boolean,
     require: true,
     default: true
-  }
+  },
+  workingForm: {
+    type: String,
+    require: true
+  },
+  experience: {
+    type: String,
+    require: true
+  },
+  amount: {
+    type: Number,
+    require: true
+  },
+  gender: {
+    type: String,
+    require: true
+  },
 })
 
 module.exports = mongoose.model("Job", jobSchema)

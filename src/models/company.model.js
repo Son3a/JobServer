@@ -11,9 +11,12 @@ module.exports = class Job {
   #about
   #phone
   #location
+  #address
+  #image
+  #link
   #idUser
   #isDelete
-  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, idUser) {
+  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, idUser, address, image, link) {
     this.id = id
     this.#name = name
     this.#totalEmployee = totalEmployee
@@ -23,6 +26,9 @@ module.exports = class Job {
     this.#location = location
     this.#isDelete = isDelete
     this.#idUser = idUser
+    this.#address = address
+    this.#link = link
+    this.#image = image
   }
   create = (idUser) => {
     return new Promise(async (resolve, reject) => {
@@ -40,6 +46,9 @@ module.exports = class Job {
           com.isDelete = this.#isDelete
           com.createDate = new Date()
           com.idUser = this.#idUser
+          com.link = this.#link
+          com.address = this.#address
+          com.image = this.#image
           com.save()
             .then((rel) => resolve(rel))
             .catch((err) => reject(err))
