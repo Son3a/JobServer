@@ -82,9 +82,9 @@ module.exports = class User {
           let newAccessToken = jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_TOKEN_KEY, {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
-
-          resolve({ accessToken: newAccessToken, refreshToken: newRefreshToken })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+          resolve({ user: await UserSchema.findById({ _id: user._id})})
+         
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
         }
