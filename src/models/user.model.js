@@ -37,7 +37,7 @@ module.exports = class User {
     const phoneExist = await UserSchema.findOne({ phone: this.#phone })
     const emailExist = await UserSchema.findOne({ email: this.#email })
 
-    if (!this.#email || !this.#phone || !this.#password || !this.#name) {
+    if (!this.#email || !this.#password || !this.#name) {
       return reject({ message: "Không được để sót bất kỳ ô nào !", isSuccess: false })
     }
     if (phoneExist) {
