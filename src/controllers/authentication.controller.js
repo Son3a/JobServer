@@ -29,12 +29,12 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.login = (req, res, next) => {
-  const { password, tokenDevice } = req.body;
-  console.log( password);
+  const { email, password, tokenDevice } = req.body;
+  console.log(password);
   new User(undefined
     , undefined
     , undefined
-    , undefined
+    , email
     , undefined
     , password
     , undefined
@@ -42,7 +42,7 @@ module.exports.login = (req, res, next) => {
     , undefined
     , undefined
     , tokenDevice
-    )
+  )
     .login()
     .then(result => {
       res.status(200).json({ message: 'Đăng nhập thành công !', success: true, data: result })
