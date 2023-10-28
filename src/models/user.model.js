@@ -197,8 +197,6 @@ module.exports = class User {
   })
 
   confirmPassword = (newPassword) => new Promise(async (resolve, reject) => {
-    console.log(this.#email, newPassword, this.#confirmPasswordCode)
-
     try {
       const user = await UserSchema.findOne({ confirmPasswordCode: this.#confirmPasswordCode, email: this.#email })
       if (user) {
