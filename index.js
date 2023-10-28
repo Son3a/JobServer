@@ -10,7 +10,9 @@ const swaggerUI = require('swagger-ui-express');
 dotenv.config();
 app.use(cors());
 app.options('*', cors());
-let bodyParser = require('body-parser')
+let bodyParser = require('body-parser');
+const jobSchema = require('./src/schemas/job.schema');
+const Job = require('./src/models/job.model');
 // user cors
 app.use(cors())
 

@@ -12,20 +12,18 @@ module.exports = class User {
   #name
   #email
   #phone
-  #username
   #password
   #role
   #refreshToken
   #confirmPasswordCode
   #jobFavourite
   #tokenDevice
-  constructor(id, avatar, name, email, phone, username, password, role = "staff", refreshToken = null, confirmPasswordCode=null, jobFavourite=[], tokenDevice='') {
+  constructor(id, avatar, name, email, phone, password, role = "staff", refreshToken = null, confirmPasswordCode=null, jobFavourite=[], tokenDevice='') {
     this.#id = id
     this.#avatar = avatar
     this.#name = name
     this.#email = email
     this.#phone = phone
-    this.#username = username
     this.#password = password
     this.#role = role
     this.#refreshToken = refreshToken
@@ -38,9 +36,8 @@ module.exports = class User {
     // check phone trung
     const phoneExist = await UserSchema.findOne({ phone: this.#phone })
     const emailExist = await UserSchema.findOne({ email: this.#email })
-    const usernameExist = await UserSchema.findOne({username : this.#username})
 
-    if (!this.#email || !this.#phone || !this.#password || !this.#username || !this.#name) {
+    if (!this.#email || !this.#phone || !this.#password || !this.#name) {
       return reject({ message: "Không được để sót bất kỳ ô nào !", isSuccess: false })
     }
     if (phoneExist) {
@@ -51,17 +48,12 @@ module.exports = class User {
       return reject({ message: "Email này đã đăng ký trước đó, vui lòng đổi lại !", isSuccess: false })
     }
 
-    if (usernameExist) {
-      return reject({ message: "Username này đã đăng ký trước đó, vui lòng đổi lại !", isSuccess: false })
-    }
-
     // thoa man het thi them vo
     const user = new UserSchema()
     user.name = this.#name
     user.avatar = this.#avatar
     user.phone = this.#phone
     user.email = this.#email
-    user.username = this.#username
     
     user.role = this.#role
     user.refreshToken = this.#refreshToken
@@ -77,11 +69,11 @@ module.exports = class User {
 
   login = () => new Promise(async (resolve, reject) => {
     new Promise((resolve, reject) => {
-      if (this.#username === '' || this.#password === '') {
-        return reject({message : 'not empty username or password'})
+      if (this.#email === '' || this.#password === '') {
+        return reject({message : 'not empty email or password'})
       }
       UserSchema
-        .findOne({ $or : [{username: this.#username}, {email : this.#email}] })
+        .findOne({ $or : [{email: this.#email}] })
         .then(user => resolve(user))
         .catch(err => reject(err))
     }).then(async user => {

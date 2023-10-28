@@ -779,12 +779,10 @@ components:
     AuthRegister:
       type: object
       required:
-        - username
         - password
         - name
         - phone
         - email
-        - username
       properties:
         username:
           type: string

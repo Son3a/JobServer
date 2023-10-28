@@ -6,15 +6,14 @@ const path = require('path')
 
 
 module.exports.create = (req, res, next) => {
-  const { name, phone, email, password, username, role = "user", refreshToken = null } = req.body;
+  const { name, email, password, role = "user", refreshToken = null } = req.body;
   const avatar = "avatar.png"
   console.log(req.body)
   new User(undefined,
     avatar,
     name,
     email.toLowerCase(),
-    phone,
-    username,
+    undefined,
     password,
     role,
     refreshToken,
@@ -30,14 +29,13 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.login = (req, res, next) => {
-  const { username, password, tokenDevice } = req.body;
-  console.log(username, password);
+  const { password, tokenDevice } = req.body;
+  console.log( password);
   new User(undefined
     , undefined
     , undefined
-    , username.toLowerCase()
     , undefined
-    , username
+    , undefined
     , password
     , undefined
     , undefined
@@ -89,14 +87,13 @@ module.exports.getAll = (req, res, next) => {
     .catch((err) => { res.status(500).json({ message: err }) })
 }
 module.exports.updateOne = (req, res, next) => {
-  const { _id, name, avatar, email, phone, username, password, role } = req.body;
+  const { _id, name, avatar, email, phone, password, role } = req.body;
   const user = new userSchema()
   user._id = _id
   user.name = name
   user.avatar = avatar
   user.email = email
   user.phone = phone
-  user.username = username
   user.password = password
   user.role = role
   new User()

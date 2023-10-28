@@ -17,7 +17,6 @@ Content-Type: application/json
     "email":"nxghs@gmail.com",
     "password":"123",
     "avartar":"no avartar",
-    "username":"123456",
     "role":"admin"
 }
 ###
