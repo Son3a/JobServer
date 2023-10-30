@@ -29,6 +29,10 @@ const applicationSchema = new mongoose.Schema({
     type: String,
     require: true
   },
+  letterRecommendation:{
+    type: String,
+    require: false
+  },
   submitDate: {
     type: Date,
     require: true,

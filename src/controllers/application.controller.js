@@ -9,7 +9,7 @@ module.exports = {
         const rel = getUserIdFromJWTToken(req.header('Authorization'))
         if (rel.success) {
             const idJobSeeker = rel.message
-            const { idJob, cv, nameSeeker, emailSeeker, phoneSeeker } = req.body
+            const { idJob, cv, nameSeeker, emailSeeker, phoneSeeker, letterRecommendation } = req.body
             new applicationModel(
                 undefined,
                 idJobSeeker,
@@ -18,6 +18,7 @@ module.exports = {
                 nameSeeker,
                 phoneSeeker,
                 emailSeeker,
+                letterRecommendation,
                 new Date()
             )
                 .create()

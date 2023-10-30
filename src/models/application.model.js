@@ -14,9 +14,10 @@ module.exports = class ApplicationModel {
     #nameSeeker
     #phoneSeeker
     #emailSeeker
+    #letterRecommendation
     #submitDate
 
-    constructor(id, idJobSeeker, idJob, cv, nameSeeker, phoneSeeker, emailSeeker, submitDate) {
+    constructor(id, idJobSeeker, idJob, cv, nameSeeker, phoneSeeker, emailSeeker, letterRecommendation, submitDate) {
         this.#id = id
         this.#idJobSeeker = idJobSeeker
         this.#idJob = idJob
@@ -24,6 +25,7 @@ module.exports = class ApplicationModel {
         this.#nameSeeker = nameSeeker
         this.#phoneSeeker = phoneSeeker
         this.#emailSeeker = emailSeeker
+        this.#letterRecommendation = letterRecommendation
         this.#submitDate = submitDate
     }
     create = () => {
@@ -35,6 +37,7 @@ module.exports = class ApplicationModel {
             app.nameSeeker = this.#nameSeeker
             app.phoneSeeker = this.#phoneSeeker
             app.emailSeeker = this.#emailSeeker
+            app.letterRecommendation = this.#letterRecommendation
             app.submitDate = new Date()
 
             const tokenDeviceSeeker = await userSchema.findById(this.#idJobSeeker).then(result => {
