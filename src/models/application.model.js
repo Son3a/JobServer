@@ -11,13 +11,19 @@ module.exports = class ApplicationModel {
     #idJobSeeker
     #idJob
     #cv
+    #nameSeeker
+    #phoneSeeker
+    #emailSeeker
     #submitDate
 
-    constructor(id, idJobSeeker, idJob, cv, submitDate) {
+    constructor(id, idJobSeeker, idJob, cv, nameSeeker, phoneSeeker, emailSeeker, submitDate) {
         this.#id = id
         this.#idJobSeeker = idJobSeeker
         this.#idJob = idJob
         this.#cv = cv
+        this.#nameSeeker = nameSeeker
+        this.#phoneSeeker = phoneSeeker
+        this.#emailSeeker = emailSeeker
         this.#submitDate = submitDate
     }
     create = () => {
@@ -26,23 +32,25 @@ module.exports = class ApplicationModel {
             app.idJobSeeker = this.#idJobSeeker
             app.idJob = this.#idJob
             app.cv = this.#cv
+            app.nameSeeker = this.#nameSeeker
+            app.phoneSeeker = this.#phoneSeeker
+            app.emailSeeker = this.#emailSeeker
             app.submitDate = new Date()
 
             const tokenDeviceSeeker = await userSchema.findById(this.#idJobSeeker).then(result => {
                 return result?.tokenDevice;
             });
             const tokenDeviceAdmin = await jobSchema.findById(this.#idJob).populate({
-                path : 'idCompany',                
-                populate : {
-                    path : 'idUser',
-                }    
+                path: 'idCompany',
+                populate: {
+                    path: 'idUser',
+                }
             }).then(result => result?.idCompany?.idUser?.tokenDevice);
             app.save()
-                .then((rel) => 
-                {
-                    if (tokenDeviceSeeker && tokenDeviceAdmin)  {
-                        pushNotification(tokenDeviceSeeker , "Chúc mừng bạn đã nộp CV thành công !");
-                        pushNotification(tokenDeviceAdmin , "Vừa có người mới nộp hồ sơ !");
+                .then((rel) => {
+                    if (tokenDeviceSeeker && tokenDeviceAdmin) {
+                        pushNotification(tokenDeviceSeeker, "Chúc mừng bạn đã nộp CV thành công !");
+                        pushNotification(tokenDeviceAdmin, "Vừa có người mới nộp hồ sơ !");
                     }
                     return resolve(rel)
                 })

@@ -17,6 +17,18 @@ const applicationSchema = new mongoose.Schema({
     type: String,
     require: true
   },
+  nameSeeker: {
+    type: String,
+    require: true
+  },
+  phoneSeeker: {
+    type: String,
+    require: true
+  },
+  emailSeeker: {
+    type: String,
+    require: true
+  },
   submitDate: {
     type: Date,
     require: true,
