@@ -83,7 +83,13 @@ module.exports = class User {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-          resolve({ user: await UserSchema.findById({ _id: user._id }) })
+          resolve(await UserSchema.findById({ _id: user._id })
+            .populate({
+              path: 'jobFavourite',
+              populate: {
+                path: 'jobId'
+              }
+            }))
 
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
