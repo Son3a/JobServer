@@ -5,6 +5,7 @@ const { SendMailText } = require('../services/sendmail.service');
 const companySchema = require('../schemas/company.schema');
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
+const occupationSchema = require('../schemas/occupation.schema');
 const saltRounds = 10;
 module.exports = class User {
   #id
@@ -83,8 +84,8 @@ module.exports = class User {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-          resolve({ user: await UserSchema.findById({ _id: user._id})})
-         
+          resolve({ user: await UserSchema.findById({ _id: user._id }) })
+
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
         }
@@ -227,14 +228,17 @@ module.exports = class User {
 
   getUser = () => new Promise(async (resolve, reject) => {
     try {
-      const res = await UserSchema.findOne({ _id: this.#id }).populate({
-        path: 'jobFavourite',
-        populate: {
-          path: 'jobId', populate: {
-            path: 'idCompany'
+      const res = await UserSchema.findOne({ _id: this.#id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId',
+            populate: {
+              path: 'idCompany',
+            }
           }
-        }
-      })
+        })
+
       let company = []
       if (res) {
         company = await companySchema.find({ idUser: this.#id }).populate({
@@ -245,8 +249,8 @@ module.exports = class User {
       console.log(result)
       resolve(result)
     } catch (error) {
-      console.log(err)
-      reject(err)
+      console.log(error)
+      reject(error)
     }
   })
 

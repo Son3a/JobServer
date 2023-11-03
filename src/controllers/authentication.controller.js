@@ -7,7 +7,7 @@ const path = require('path')
 
 module.exports.create = (req, res, next) => {
   const { name, email, password, role = "user", refreshToken = null } = req.body;
-  const avatar = "avatar.png"
+  const avatar = ""
   console.log(req.body)
   new User(undefined,
     avatar,
@@ -216,11 +216,11 @@ module.exports.getUser = (req, res, next) => {
 
 module.exports.editProfile = (req, res, next) => {
   const { _id } = req.data
-  const { name, email, phone } = req.body
+  const { name, email, phone, avatar } = req.body
   const file = req.file
   new User(
     _id,
-    file?.filename,
+    avatar,
     name,
     email,
     phone,
