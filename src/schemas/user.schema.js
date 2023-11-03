@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require : true
+    require: true
   },
-  avatar :{
+  avatar: {
     type: String
   },
   email: {
@@ -22,43 +22,45 @@ const userSchema = new mongoose.Schema({
     type: String,
     require: true
   },
-  role : {
-    type : String,
-    require : true
+  role: {
+    type: String,
+    require: true
   },
-  refreshToken : {
+  refreshToken: {
     type: String
   },
-  confirmPasswordCode : {
-    type : Number
+  confirmPasswordCode: {
+    type: Number
   },
-  jobFavourite : [
+  jobFavourite: [
     {
-      jobId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Job'
+      jobId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Job'
       },
-      createdAt : {
-        type : Date,
-        default : new Date()
+      createdAt: {
+        type: Date,
+        default: new Date()
       },
     }
   ],
-  tokenDevice : {
-    type : String
+  tokenDevice: {
+    type: String
   }
 })
 
 userSchema.methods.addJobFavourite = function (job) {
+  console.log('job save: ', job)
   const listJobFavouriteNew = [...this.jobFavourite, {
-    jobId : job,
-    createdAt : new Date()
+    jobId: job,
+    createdAt: new Date()
   }]
   this.jobFavourite = listJobFavouriteNew;
   return this.save();
 }
 
 userSchema.methods.removeJobFavourite = function (job) {
+  console.log('job remove: ', job)
   const listJobFavouriteNew = [...this.jobFavourite].filter(item => JSON.stringify(item.jobId) !== JSON.stringify(mongoose.Types.ObjectId(job)))
   this.jobFavourite = listJobFavouriteNew;
 

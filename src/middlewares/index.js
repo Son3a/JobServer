@@ -5,7 +5,6 @@ module.exports = {
     const token = req.header('Authorization')
     if (token) {
       const accessToken = token.split(" ")[1]
-      console.log(accessToken)
       try {
         jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY, (err, data) => {
           if (err) {

@@ -84,7 +84,13 @@ module.exports = class User {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-          resolve({ user: await UserSchema.findById({ _id: user._id }) })
+          resolve(await UserSchema.findById({ _id: user._id })
+            .populate({
+              path: 'jobFavourite',
+              populate: {
+                path: 'jobId'
+              }
+            }))
 
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
@@ -246,7 +252,6 @@ module.exports = class User {
         })
       }
       let result = { ...res._doc, company: company ? company[0] : {} }
-      console.log(result)
       resolve(result)
     } catch (error) {
       console.log(error)
@@ -301,23 +306,21 @@ module.exports = class User {
   // add list job favourite
   patchAddJobFavourite = (jobId) => new Promise(async (resolve, reject) => {
     try {
+      console.log("id job", jobId);
       const user = await UserSchema.findOne({ _id: this.#id })
       const isExistInListFavourite = user.jobFavourite.filter(item => {
-        console.log("item jobs " + item);
-        console.log(item.jobId, mongoose.Types.ObjectId(jobId))
         return JSON.stringify(item.jobId) === JSON.stringify(mongoose.Types.ObjectId(jobId))
       })
       if (isExistInListFavourite.length === 0) {
         // chua luu job nay vao list yeu thich -> them vao list
         await user.addJobFavourite(jobId);
-        return resolve({ message: "Đã thêm công việc này vào danh sách yêu thích", isSuccess: true })
+        return resolve({ message: "Đã thêm công việc này vào danh sách yêu thích", isSuccess: true, status: 1 })
       } else {
         // da luu roi -> loai bo ra khoi list
         await user.removeJobFavourite(jobId);
-        return resolve({ message: "Đã bỏ công việc này ra khỏi danh sách yêu thích", isSuccess: true })
+        return resolve({ message: "Đã bỏ công việc này ra khỏi danh sách yêu thích", isSuccess: true, status: 0 })
       }
     } catch (error) {
-      console.log(error)
       reject({ message: "Lỗi từ server", isSuccess: false })
     }
   })
