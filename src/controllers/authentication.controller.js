@@ -217,7 +217,7 @@ module.exports.getUser = (req, res, next) => {
 module.exports.editProfile = (req, res, next) => {
   const { _id } = req.data
   const { name, email, phone, avatar } = req.body
-  const file = req.file
+
   new User(
     _id,
     avatar,

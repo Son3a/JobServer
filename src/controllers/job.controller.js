@@ -109,7 +109,7 @@ module.exports.getSearchJob = (req, res, next) => {
   const condition = req.body
   new Job()
     .findJob(condition)
-    .then((rel) => { return res.status(200).json({ success: true, message: "search job success", data: rel }) })
+    .then((rel) => { return res.status(200).json({ count: rel.length, success: true, message: "search job success", data: rel }) })
     .catch(err => res.status(404).json({ message: "search job fail", success: false, error: err.message }))
 }
 //xem tat ca cac job da dang doi' voi NHA TUYEN DUNG

@@ -3,7 +3,7 @@ const companySchema = require('../schemas/company.schema')
 const applicationSchema = require('../schemas/application.schema')
 const { default: mongoose } = require('mongoose')
 const { verifyToken, getUserIdFromJWTToken } = require('../middlewares')
-const { chuanhoadaucau } = require('../services/standardVietNamWork')
+const { chuanhoadaucau, getSalary } = require('../services/standardVietNamWork')
 const occupationSchema = require('../schemas/occupation.schema')
 const { populate } = require('../schemas/user.schema')
 const { Mongoose } = require('mongoose')
@@ -238,6 +238,10 @@ module.exports = class Job {
   // vua tim kiem vua nhan theo id
   findJob = (condition) => {
     return new Promise(async (resolve, reject) => {
+      var salarys
+      if (condition.experience != null) {
+        salarys = getSalary(condition.experience.toString())
+      }
       jobSchema.find({ deadline: { $gt: new Date() }, status: true })
         .populate('idOccupation')
         .populate('idCompany')
@@ -245,6 +249,12 @@ module.exports = class Job {
           rel = rel.filter(i =>
             (
               i.idCompany != null && i.idOccupation != null
+            )
+            &&
+            i.experience.toString().includes(condition.experience.toString())
+            &&
+            (
+              
             )
             &&
             (
@@ -255,6 +265,7 @@ module.exports = class Job {
               chuanhoadaucau(i.requirement.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase()))
             )
           );
+          console.log(condition.experience)
           for (let i in condition) {
             switch (i) {
               case 'locationWorking':

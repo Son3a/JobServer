@@ -27,5 +27,15 @@ module.exports = {
         //str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
         str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
         return str;
+    },
+
+    getSalary: function (str) {
+        var arr = str.split('-')
+        var newArr = []
+        newArr[0] = arr[0].match(/(\d+)/)[0];
+        if (arr.length == 2) {
+            newArr[1] = arr[1].match(/(\d+)/)[0];
+        }
+        return newArr
     }
 }
