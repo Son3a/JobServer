@@ -3,10 +3,13 @@ const companySchema = require('../schemas/company.schema')
 const applicationSchema = require('../schemas/application.schema')
 const { default: mongoose } = require('mongoose')
 const { verifyToken, getUserIdFromJWTToken } = require('../middlewares')
-const { chuanhoadaucau, getSalary } = require('../services/standardVietNamWork')
+const { chuanhoadaucau } = require('../services/standardVietNamWork')
+const { checkSalary } = require('../services/checkSalary')
 const occupationSchema = require('../schemas/occupation.schema')
 const { populate } = require('../schemas/user.schema')
 const { Mongoose } = require('mongoose')
+const axios = require('axios')
+
 module.exports = class Job {
   id
   #name
@@ -238,10 +241,9 @@ module.exports = class Job {
   // vua tim kiem vua nhan theo id
   findJob = (condition) => {
     return new Promise(async (resolve, reject) => {
-      var salarys
-      if (condition.experience != null) {
-        salarys = getSalary(condition.experience.toString())
-      }
+      const convertMoney = await axios.get('https://api.currencyapi.com/v3/latest?apikey=cur_live_BSIxCVrijOkLVEz6JnrjwF8TEDP8cE2fznAVXecv&currencies=VND')
+      const unitMoney = convertMoney.data.data.VND.value
+
       jobSchema.find({ deadline: { $gt: new Date() }, status: true })
         .populate('idOccupation')
         .populate('idCompany')
@@ -254,7 +256,7 @@ module.exports = class Job {
             i.experience.toString().includes(condition.experience.toString())
             &&
             (
-              
+              checkSalary(condition.salary.toString(), i.salary.toString(), unitMoney.toString())
             )
             &&
             (

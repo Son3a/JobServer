@@ -1,3 +1,5 @@
+const { parse } = require("yamljs");
+
 module.exports = {
     chuanhoadaucau: function removeVietnameseTones(str) {
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -27,15 +29,5 @@ module.exports = {
         //str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
         str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
         return str;
-    },
-
-    getSalary: function (str) {
-        var arr = str.split('-')
-        var newArr = []
-        newArr[0] = arr[0].match(/(\d+)/)[0];
-        if (arr.length == 2) {
-            newArr[1] = arr[1].match(/(\d+)/)[0];
-        }
-        return newArr
     }
 }
