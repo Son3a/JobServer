@@ -271,37 +271,6 @@ module.exports = class Job {
             )
           );
           console.log(condition.experience)
-          for (let i in condition) {
-            switch (i) {
-              case 'locationWorking':
-                if (condition[i].length > 0) {
-                  var tmpArray = [];
-                  for (let tmp = 0; tmp < condition[i].length; tmp++) {
-                    condition[i][tmp] = chuanhoadaucau(condition[i][tmp]).toLowerCase();
-                    for (let relTmp of rel) {
-                      if (chuanhoadaucau(relTmp.locationWorking).toLowerCase().includes(condition[i][tmp])) {
-                        tmpArray.push(relTmp);
-                      }
-                    }
-                  }
-                  rel = tmpArray;
-                  //rel = rel.filter(item => condition[i].includes(chuanhoadaucau(item.locationWorking).toLowerCase()))
-                }
-                break;
-              case 'idCompany':
-                if (condition[i].length > 0) {
-                  rel = rel.filter(item => condition[i].includes(item.idCompany._id.toString()))
-                }
-                break;
-              case 'idOccupation':
-                if (condition[i].length > 0) {
-                  rel = rel.filter(item => condition[i].includes(item.idOccupation._id.toString()))
-                }
-                break;
-              default:
-                break;
-            }
-          }
           resolve(rel);
         })
         .catch((err) => reject(err))
