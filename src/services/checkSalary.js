@@ -15,6 +15,10 @@ function hasNumber(str) {
 }
 
 const checkSalary = function (strSalary, salary, unitMoney) {
+    if(!strSalary){
+        return true;
+    }
+
     //Lương thỏa thuận
     if (strSalary.toLowerCase() === salary.toLowerCase()) {
         return true;
