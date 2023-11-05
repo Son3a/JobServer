@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.methods.addJobFavourite = function (job) {
-  console.log('job save: ', job)
+  //('job save: ', job)
   const listJobFavouriteNew = [...this.jobFavourite, {
     jobId: job,
     createdAt: new Date()
@@ -60,7 +60,7 @@ userSchema.methods.addJobFavourite = function (job) {
 }
 
 userSchema.methods.removeJobFavourite = function (job) {
-  console.log('job remove: ', job)
+  //('job remove: ', job)
   const listJobFavouriteNew = [...this.jobFavourite].filter(item => JSON.stringify(item.jobId) !== JSON.stringify(mongoose.Types.ObjectId(job)))
   this.jobFavourite = listJobFavouriteNew;
 

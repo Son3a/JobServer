@@ -112,7 +112,7 @@ module.exports = class ApplicationModel {
     // danh sach cong viec da apply
     getAllByUserId = (userId, page) => {
 
-        //console.log(userId)
+        ////(userId)
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(userId) })
@@ -150,7 +150,7 @@ module.exports = class ApplicationModel {
                     return reject({ message: 'company is not exists' })
                 }
             } catch (error) {
-                console.log(error)
+                //(error)
                 return reject({ message: error })
             }
         })

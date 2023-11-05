@@ -14,7 +14,7 @@ module.exports.create = (req, res, next) => {
     )
       .create(accesstoken.message)
       .then(user => {
-        console.log('thanh cong!')
+        //('thanh cong!')
         res.status(200).json({ message: 'add new company success', success: true, data: user })
       })
       .catch(err => res.status(501).json({ message: err.message, success: err.isSuccess }))

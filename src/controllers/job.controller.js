@@ -47,7 +47,7 @@ module.exports.readAll = (req, res, next) => {
 }
 module.exports.delete = (req, res, next) => {
   const { _id } = req.body
-  console.log(req.body);
+  //(req.body);
   new Job(
     undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
   )
@@ -97,7 +97,7 @@ module.exports.getAllSortByDate = (req, res, next) => {
 // loc job  NGUOI TIM VIEC
 // get suggest job name by keyword search
 module.exports.getSearchByKey = (req, res, next) => {
-  //console.log(req.query.keyword)
+  ////(req.query.keyword)
   new Job()
     .searchByKey(req.query.keyword)
     .then((rel) => { return res.status(200).json({ success: true, message: "filter job success", data: rel }) })
@@ -111,7 +111,7 @@ module.exports.getSearchJob = (req, res, next) => {
     .findJob(condition)
     .then((rel) => { return res.status(200).json({ count: rel.length, success: true, message: "search job success", data: rel }) })
     .catch(err => { 
-      console.log(err);
+      //(err);
       res.status(404).json({ message: "search job fail", success: false, error: err.message }) 
   })
 }
@@ -123,21 +123,21 @@ module.exports.getAllJobModerator = (req, res, next) => {
     try {
       var decode = jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY)
       if (decode) {
-        //console.log(decode)
+        ////(decode)
         new Job()
           .getAllJobModerator(decode._id)
           .then((rel) => res.status(200).json({ success: true, message: "get job success", data: rel }))
           .catch(err => res.status(404).json({ message: "get job fail", success: false, error: err }))
       }
     } catch (error) {
-      console.log(error)
+      //(error)
       return res.status(500).json({ message: "Server is error", isSuccess: false })
     }
   }
 
 }
 module.exports.uploadImage = (req, res, next) => {
-  console.log(req.file.filename);
+  //(req.file.filename);
 }
 
 // hien thị danh sách các job theo company.

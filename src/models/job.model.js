@@ -48,7 +48,7 @@ module.exports = class Job {
       try {
         const company = await companySchema.findById(this.#idCompany)
         const occupation = await occupationSchema.findById(this.#idOccupation)
-        console.log(company, occupation)
+        //(company, occupation)
         if (company == null || company.isDelete) reject({ message: "company is undefined" })
         if (occupation == null || occupation.isDelete) reject({ message: "Occupattion is undefined" })
         const job = new jobSchema()
@@ -79,7 +79,7 @@ module.exports = class Job {
     return new Promise(async (resolve, reject) => {
       try {
         var jobFind = await jobSchema.findOne({ _id: id });
-        console.log(jobFind, id);
+        //(jobFind, id);
         if (!jobFind?.status) {
           reject({ message: "job already deleted" })
         } else {
@@ -119,12 +119,12 @@ module.exports = class Job {
     return new Promise((resolve, reject) => {
       try {
         const userId = getUserIdFromJWTToken(token)
-        //console.log(userId)
+        ////(userId)
         if (userId.success) {
           jobSchema.findById(id)
             .populate('idCompany')
             .populate('idOccupation')
-            //console.log('job ' + job);
+            ////('job ' + job);
             .then(async (job) => {
               job = job.toObject()
               var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
@@ -139,7 +139,7 @@ module.exports = class Job {
               else job.isApply = false;
               job['numApply'] = numApply.length;
               job['relatedJob'] = relatedJob
-              //console.log('job: ' + job)
+              ////('job: ' + job)
               return resolve(job)
             })
             .catch((err) => reject(err))
@@ -149,7 +149,7 @@ module.exports = class Job {
         jobSchema.findById(id)
           .populate('idCompany')
           .populate('idOccupation')
-          //console.log('job ' + job);
+          ////('job ' + job);
           .then(async (job) => {
             var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
             var relatedJob = await jobSchema.find({
@@ -162,7 +162,7 @@ module.exports = class Job {
             job['numApply'] = numApply.length;
             job['isApply'] = false
             job['relatedJob'] = relatedJob
-            //console.log('job: ' + job)
+            ////('job: ' + job)
             return resolve(job)
           })
           .catch((err) => reject(err))
@@ -226,13 +226,13 @@ module.exports = class Job {
   }
   //xem tất cả job đã đăng(dành cho ng tuyển dụng)
   getAllJobModerator = (userId) => {
-    console.log(userId)
+    //(userId)
     return new Promise(async (resolve, reject) => {
       var company = await companySchema.findOne({ idUser: userId }).exec()
-      //console.log(company._id.toString())
+      ////(company._id.toString())
       jobSchema.find({ idCompany: company._id.toString() })
         .then((rel) => {
-          //console.log(rel)
+          ////(rel)
           return resolve(rel)
         })
         .catch((err) => reject(err))
@@ -270,7 +270,7 @@ module.exports = class Job {
               chuanhoadaucau(i.locationWorking.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase()))
             )
           );
-          console.log(condition.experience)
+          //(condition.experience)
           resolve(rel);
         })
         .catch((err) => reject(err))
@@ -350,7 +350,7 @@ module.exports = class Job {
         var applies = await applicationSchema.find({})
           .populate('idJob')
         applies = applies.filter(i => i.idJob != null)
-        //console.log(applies)
+        ////(applies)
         var availableCompanies = await companySchema.find({ isDelete: false })
         availableCompanies = availableCompanies.map(i => i._id.toString())
         var availableOccupation = await occupationSchema.find({ isDelete: false })
@@ -378,7 +378,7 @@ module.exports = class Job {
         var delOcc = await occupationSchema.find({ isDelete: false })
         delOcc = delOcc.map(i => i._id)
         var totalJob = await jobSchema.find({ status: true, deadline: { $gt: new Date() }, idCompany: { $in: delCom }, idOccupation: { $in: delOcc } })
-        console.log(totalJob)
+        //(totalJob)
         switch (type) {
           case 'month':
             for (let i = 0; i < 12; i++) {

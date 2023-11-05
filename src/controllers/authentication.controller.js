@@ -8,7 +8,7 @@ const path = require('path')
 module.exports.create = (req, res, next) => {
   const { name, email, password, role = "user", refreshToken = null } = req.body;
   const avatar = ""
-  console.log(req.body)
+  //(req.body)
   new User(undefined,
     avatar,
     name,
@@ -30,7 +30,7 @@ module.exports.create = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password, tokenDevice } = req.body;
-  console.log(password);
+  //(password);
   new User(undefined
     , undefined
     , undefined
@@ -63,11 +63,11 @@ module.exports.logOut = (req, res, next) => {
     , undefined)
     .logOut()
     .then(data => {
-      console.log(data)
+      //(data)
       return res.status(201).json({ message: "logout success", isSuccess: true })
     })
     .catch(err => {
-      console.log(err)
+      //(err)
       return res.status(401).json({ message: "logout success", isSuccess: false, err })
     }
     )
@@ -103,7 +103,7 @@ module.exports.updateOne = (req, res, next) => {
 }
 module.exports.changePasswordController = (req, res, next) => {
   const { password, newPassword } = req.body;
-  console.log(req.data)
+  //(req.data)
   new User(
     req.data._id,
     undefined,
@@ -119,7 +119,7 @@ module.exports.changePasswordController = (req, res, next) => {
     .changePassword(newPassword)
     .then(response => res.status(201).json(response))
     .catch(err => {
-      console.log(err)
+      //(err)
       return res.status(500).json(err)
     })
 }

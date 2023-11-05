@@ -5,7 +5,7 @@ const applicationSchema = require('../schemas/application.schema')
 const { upload } = require('../services/uploadImage.service')
 module.exports = {
     create: (req, res, next) => {
-        console.log(req.file)
+        //(req.file)
         const rel = getUserIdFromJWTToken(req.header('Authorization'))
         if (rel.success) {
             const idJobSeeker = rel.message
@@ -47,7 +47,7 @@ module.exports = {
     getAllByJobId: (req, res, next) => {
         const jobId = req.query.jobid
         const page = req.query.page
-        //console.log(jobId)
+        ////(jobId)
         new applicationModel()
             .getAllByJobId(jobId, page)
             .then((rel) => res.status(200).json({ success: true, message: "get application success", data: rel }))
@@ -59,7 +59,7 @@ module.exports = {
         if (decode.success) {
             const page = req.query.page
             const userId = decode.message
-            //console.log(jobId)
+            ////(jobId)
             new applicationModel()
                 .getAllByUserId(userId, page)
                 .then((data) => res.status(200).json({ success: true, message: "get application success", data: data }))
@@ -71,7 +71,7 @@ module.exports = {
     getAllApplicationByCompanyId: (req, res, next) => {
         const token = req.header('Authorization')
         const decode = getUserIdFromJWTToken(token)
-        //console.log(jobId)
+        ////(jobId)
         if (decode.message === false) { res.status(500).json({ success: false, message: "get application failed", error: 'user is not correct!' }) }
         new applicationModel()
             .getAllApplicationByCompanyId(decode.message)

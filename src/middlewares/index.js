@@ -8,7 +8,7 @@ module.exports = {
       try {
         jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY, (err, data) => {
           if (err) {
-            console.log(err)
+            //(err)
             req.data = data
             res.status(401).json({ message: "Not authozation", isSuccess: false })
           }
@@ -18,7 +18,7 @@ module.exports = {
           }
         })
       } catch (error) {
-        console.log(error)
+        //(error)
         return res.status(500).json({ message: "Server is error", isSuccess: false })
       }
     } else {
@@ -27,14 +27,14 @@ module.exports = {
   },
   verifyTokenIsAdmin: async (req, res, next) => {
     const token = req.header('Authorization')
-    console.log(token)
+    //(token)
     if (token) {
       const accessToken = token.split(" ")[1]
       try {
         jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY, (err, data) => {
-          console.log(data)
+          //(data)
           if (err) {
-            console.log(err)
+            //(err)
             return res.status(401).json({ message: "Not authozation", isSuccess: false })
           }
           if (data.role === 'admin') {
@@ -45,7 +45,7 @@ module.exports = {
           }
         })
       } catch (error) {
-        console.log(error)
+        //(error)
         return res.status(500).json({ message: "Server is error", isSuccess: false })
       }
     } else {
@@ -67,19 +67,19 @@ module.exports = {
     const token = req.header('Authorization')
     if (token) {
       const refreshToken = token.split(" ")[1]
-      console.log(refreshToken)
+      //(refreshToken)
       try {
         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_KEY, (err, data) => {
           if (err) {
-            console.log(err)
+            //(err)
             return res.status(401).json({ message: "Not authozation", isSuccess: false })
           }
-          console.log("data : " + data)
+          //("data : " + data)
           req.data = data
         })
         next()
       } catch (error) {
-        console.log(error)
+        //(error)
         return res.status(500).json({ message: "Server is error", isSuccess: false })
       }
     } else {
