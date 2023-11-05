@@ -260,6 +260,10 @@ module.exports = class Job {
             )
             &&
             (
+              chuanhoadaucau(i.locationWorking.toLowerCase()).includes(chuanhoadaucau(condition.locationWorking.toString().toLowerCase()))
+            )
+            &&
+            (
               chuanhoadaucau(i.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
               chuanhoadaucau(i.idCompany.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
               chuanhoadaucau(i.idOccupation.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
