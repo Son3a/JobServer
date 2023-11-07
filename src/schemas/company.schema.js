@@ -36,11 +36,11 @@ const companySchema = new mongoose.Schema({
     require: true
   }
   ,
-  idUser: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    require: true
-  },
+  // idUser: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "User",
+  //   require: true
+  // },
   link:{
     type: String
   },

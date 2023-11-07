@@ -46,6 +46,11 @@ const userSchema = new mongoose.Schema({
   ],
   tokenDevice: {
     type: String
+  },
+   idCompany: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+    require: true
   }
 })
 

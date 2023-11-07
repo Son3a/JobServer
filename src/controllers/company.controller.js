@@ -66,7 +66,7 @@ module.exports.getPaging = (req, res, next) => {
 }
 
 module.exports.updateOne = (req, res, next) => {
-  const { _id, name, totalEmployee, type, about, phone, location, idUser, image, address, link } = req.body;
+  const { _id, name, totalEmployee, type, about, phone, location, image, address, link } = req.body;
   const company = new companySchema()
   company._id = _id
   company.name = name
@@ -75,7 +75,6 @@ module.exports.updateOne = (req, res, next) => {
   company.about = about
   company.phone = phone
   company.location = location
-  company.idUser = idUser
   company.address = address
   company.link = link
   company.image = image

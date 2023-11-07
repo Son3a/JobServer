@@ -244,14 +244,16 @@ module.exports = class User {
             }
           }
         })
+        .populate("idCompany")
 
-      let company = []
-      if (res) {
-        company = await companySchema.find({ idUser: this.#id }).populate({
-          path: 'idUser',
-        })
-      }
-      let result = { ...res._doc, company: company ? company[0] : {} }
+      // let company = []
+      // if (res) {
+      //   company = await companySchema.find({ idUser: this.#id }).populate({
+      //     path: 'idUser',
+      //   })
+      // // }
+      // let result = { ...res._doc, company: company ? company[0] : {} }
+      let result = { ...res._doc }
       resolve(result)
     } catch (error) {
       //(error)
