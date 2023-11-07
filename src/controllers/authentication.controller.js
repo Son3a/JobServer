@@ -6,14 +6,14 @@ const path = require('path')
 
 
 module.exports.create = (req, res, next) => {
-  const { name, email, password, role = "user", refreshToken = null } = req.body;
+  const { name, email, password, role, phone, refreshToken = null } = req.body;
   const avatar = ""
   //(req.body)
   new User(undefined,
     avatar,
     name,
     email.toLowerCase(),
-    undefined,
+    phone,
     password,
     role,
     refreshToken,
