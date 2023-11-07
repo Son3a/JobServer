@@ -4,9 +4,10 @@ mongoose.set("strictQuery", false);
 module.exports.connect = async() =>{
   try {
     await mongoose.connect( process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true  } );
-    //( 'Connected Database' );
+    console.log( 'Connected Database' );
   } catch ( err ) {
     //(err)
+    console.log(err);
     throw new Error(err.message);
   }
 }

@@ -211,7 +211,10 @@ module.exports.getUser = (req, res, next) => {
     undefined
   ).getUser()
     .then(result => res.status(200).json(result))
-    .catch(err => res.status(500).json(err))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err)
+    })
 }
 
 module.exports.editProfile = (req, res, next) => {

@@ -45,5 +45,5 @@ require('./src/routes')(app)
 require('./src/db').connect()
 
 app.listen(port, () => {
-  //(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`)
 })
