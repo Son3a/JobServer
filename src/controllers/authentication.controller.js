@@ -47,7 +47,10 @@ module.exports.login = (req, res, next) => {
     .then(result => {
       res.status(200).json({ message: 'Đăng nhập thành công !', success: true, data: result })
     })
-    .catch(err => res.status(401).json({ message: err.message, success: err.isSuccess }))
+    .catch(err => {
+      console.log(err);
+      res.status(401).json({ message: err.message, success: err.isSuccess })
+    })
 }
 
 module.exports.logOut = (req, res, next) => {
