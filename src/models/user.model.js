@@ -90,7 +90,8 @@ module.exports = class User {
               populate: {
                 path: 'jobId'
               }
-            }))
+            })
+            .populate("idCompany"))
 
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
