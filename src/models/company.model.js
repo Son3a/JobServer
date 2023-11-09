@@ -157,9 +157,7 @@ module.exports = class Job {
   }
   readOne = (id) => {
     return new Promise((resolve, reject) => {
-      return companySchema.findById(id).populate({
-        path: 'idUser'
-      })
+      return companySchema.findById(id)
         .then((rel) => {
           if (rel.isDelete) reject({ message: "this company is deleted" })
           else resolve(rel);
