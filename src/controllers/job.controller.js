@@ -4,12 +4,12 @@ const jobSchema = require('../schemas/job.schema');
 const jwt = require('jsonwebtoken');
 const { uploadImage } = require('../services/uploadImage.service');
 module.exports.create = (req, res, next) => {
-  const { name, description, requirement, postingDate, deadline, salary, locationWorking, idOccupation, idCompany, gender, experience, workingForm, amount } = req.body;
+  const { name, description, requirement, deadline, salary, locationWorking, idOccupation, idCompany, gender, experience, workingForm, amount } = req.body;
   new Job(undefined,
     name,
     description,
     requirement,
-    postingDate,
+    undefined,
     deadline,
     salary,
     locationWorking,
