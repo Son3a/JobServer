@@ -236,6 +236,7 @@ module.exports = class Job {
       console.log(user);
       ////(company._id.toString())
       jobSchema.find({ idCompany: user.idCompany.toString() })
+        .sort({ postingDate: -1 })
         .populate("idCompany")
         .populate("idOccupation")
         .then((rel) => {
