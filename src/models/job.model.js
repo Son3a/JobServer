@@ -174,7 +174,10 @@ module.exports = class Job {
           reject({ message: "this job was deleted. Can't update." })
         } else {
           jobSchema.findByIdAndUpdate(job._id, job)
-            .then(rel => resolve(job))
+            .then(rel => resolve(
+              jobSchema.findById(job._id)
+                .populate('idCompany')
+                .populate('idOccupation')))
             .catch(err => reject(err))
         }
       } catch (error) {
