@@ -120,14 +120,15 @@ module.exports = class Job {
     return new Promise((resolve, reject) => {
       try {
         const userId = getUserIdFromJWTToken(token)
+        console.log("hihi");
         ////(userId)
         if (userId.success) {
           jobSchema.findById(id)
             .populate('idCompany')
             .populate('idOccupation')
-            ////('job ' + job);
             .then(async (job) => {
               job = job.toObject()
+              var user = await userSchema.findOne({ idCompany: job.idCompany._id })
               var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
               var isApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id), idJobSeeker: mongoose.Types.ObjectId(userId.message) })
               var relatedJob = await jobSchema.find({
@@ -141,6 +142,7 @@ module.exports = class Job {
               job['numApply'] = numApply.length;
               job['relatedJob'] = relatedJob
               ////('job: ' + job)
+              job.userCompany = user
               return resolve(job)
             })
             .catch((err) => reject(err))
@@ -152,6 +154,8 @@ module.exports = class Job {
           .populate('idOccupation')
           ////('job ' + job);
           .then(async (job) => {
+            var user = await userSchema.findOne({ idCompany: job.idCompany._id })
+            console.log(user);
             var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
             var relatedJob = await jobSchema.find({
               deadline: { $gte: new Date() }, status: true, $or: [{ idCompany: job.idCompany._id }, { requirement: job.requirement }]
@@ -164,6 +168,7 @@ module.exports = class Job {
             job['isApply'] = false
             job['relatedJob'] = relatedJob
             ////('job: ' + job)
+            job.userCompany = user
             return resolve(job)
           })
           .catch((err) => reject(err))

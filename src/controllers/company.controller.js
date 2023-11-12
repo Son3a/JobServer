@@ -10,7 +10,7 @@ module.exports.create = (req, res, next) => {
   if (accesstoken.success == false) res.status(501).json({ message: 'User is not defined', success: false })
   else {
     new Company(
-      undefined, name, totalEmployee, type, about, phone, false, location, accesstoken.message, address, image, link
+      undefined, name, totalEmployee, type, about, phone, false, location, accesstoken.message, address, image, link, idUser
     )
       .create(accesstoken.message)
       .then(user => {
@@ -52,7 +52,7 @@ module.exports.getAll = (req, res, next) => {
 module.exports.getPaging = (req, res, next) => {
   try {
     new Company(
-      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
+      undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined
     )
       .getPaging(req.params.name, req.query.page)
       .then(rel => {
@@ -66,7 +66,7 @@ module.exports.getPaging = (req, res, next) => {
 }
 
 module.exports.updateOne = (req, res, next) => {
-  const { _id, name, totalEmployee, type, about, phone, location, image, address, link } = req.body;
+  const { _id, name, totalEmployee, type, about, phone, location, image, address, link, idUser } = req.body;
   const company = new companySchema()
   company._id = _id
   company.name = name
@@ -78,6 +78,7 @@ module.exports.updateOne = (req, res, next) => {
   company.address = address
   company.link = link
   company.image = image
+  company.idUser = idUser
   new Company()
     .update(company)
     .then((rel) => { res.status(200).json({ message: 'update company success', success: true, relsult: rel }) })
