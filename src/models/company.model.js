@@ -16,7 +16,7 @@ module.exports = class Job {
   #link
   #idUser
   #isDelete
-  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, idUser, address, image, link) {
+  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, address, image, link) {
     this.id = id
     this.#name = name
     this.#totalEmployee = totalEmployee
@@ -25,17 +25,13 @@ module.exports = class Job {
     this.#phone = phone
     this.#location = location
     this.#isDelete = isDelete
-    this.#idUser = idUser
     this.#address = address
     this.#link = link
     this.#image = image
   }
-  create = (idUser) => {
+  create = () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const isCreate = await companySchema.findOne({ idUser: mongoose.Types.ObjectId(idUser) })
-        if (isCreate !== null) return reject({ message: "User already create company before!" })
-        else {
           const com = new companySchema()
           com.name = this.#name
           com.totalEmployee = this.#totalEmployee
@@ -45,14 +41,13 @@ module.exports = class Job {
           com.location = this.#location
           com.isDelete = this.#isDelete
           com.createDate = new Date()
-          com.idUser = this.#idUser
           com.link = this.#link
           com.address = this.#address
           com.image = this.#image
           com.save()
             .then((rel) => resolve(rel))
             .catch((err) => reject(err))
-        }
+        
       }
       catch (e) {
         reject({ message: 'an exception occur when execute the request' })
@@ -162,9 +157,7 @@ module.exports = class Job {
   }
   readOne = (id) => {
     return new Promise((resolve, reject) => {
-      return companySchema.findById(id).populate({
-        path: 'idUser'
-      })
+      return companySchema.findById(id)
         .then((rel) => {
           if (rel.isDelete) reject({ message: "this company is deleted" })
           else resolve(rel);

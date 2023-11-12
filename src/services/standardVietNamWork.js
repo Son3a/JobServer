@@ -1,3 +1,5 @@
+const { parse } = require("yamljs");
+
 module.exports = {
     chuanhoadaucau: function removeVietnameseTones(str) {
         str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");

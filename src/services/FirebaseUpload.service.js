@@ -28,7 +28,7 @@ module.exports = {
             //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
             // Grab the public url
             const downloadURL = await getDownloadURL(snapshot.ref);
-            console.log('File successfully uploaded.');
+            //('File successfully uploaded.');
             // return res.send({
             //     message: 'file uploaded to firebase storage',
             //     name: req.file.originalname,
@@ -54,7 +54,7 @@ module.exports = {
             //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
             // Grab the public url
             const downloadURL = await getDownloadURL(snapshot.ref);
-            console.log('File successfully uploaded.');
+            //('File successfully uploaded.');
             // return res.send({
             //     message: 'file uploaded to firebase storage',
             //     name: req.file.originalname,

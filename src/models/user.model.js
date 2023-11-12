@@ -5,6 +5,7 @@ const { SendMailText } = require('../services/sendmail.service');
 const companySchema = require('../schemas/company.schema');
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
+const occupationSchema = require('../schemas/occupation.schema');
 const saltRounds = 10;
 module.exports = class User {
   #id
@@ -89,7 +90,8 @@ module.exports = class User {
               populate: {
                 path: 'jobId'
               }
-            }))
+            })
+            .populate("idCompany"))
 
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
@@ -104,7 +106,7 @@ module.exports = class User {
   createRefreshToken = () => new Promise(async (resolve, reject) => {
     try {
       const user = await UserSchema.findById({ _id: this.#id })
-      console.log(user)
+      //(user)
 
       let newRefreshToken, newAccessToken
       const { _id, role } = user
@@ -120,7 +122,7 @@ module.exports = class User {
       await UserSchema.updateOne({ _id }, { refreshToken: newRefreshToken })
       resolve({ accessToken: newAccessToken, refreshToken: newRefreshToken, isSuccess: true })
     } catch (error) {
-      console.log(error)
+      //(error)
       return reject({ message: "Error in server !", isSuccess: false })
     }
   })
@@ -172,7 +174,7 @@ module.exports = class User {
         reject({ message: "Không có người này, token bị sai !", isSuccess: false })
       }
     } catch (error) {
-      console.log(error)
+      //(error)
       return reject({ message: "Lỗi server", err: err })
     }
   })
@@ -215,43 +217,48 @@ module.exports = class User {
         return reject({ message: "Mã xác nhận không đúng, thử lại !", isSuccess: false })
       }
     } catch (error) {
-      console.log(error)
+      //(error)
       return reject({ message: "Lỗi từ server ! vui lòng thử lại !", error: error, isSuccess: false })
     }
   })
 
   logOut = () => new Promise(async (resolve, reject) => {
     try {
-      console.log(this.#id);
+      //(this.#id);
       const data = await UserSchema.updateOne({ _id: this.#id }, { refreshToken: null, confirmPasswordCode: null })
       resolve({ data, message: "Logout success", isSuccess: true })
     } catch (error) {
-      console.log(error)
+      //(error)
       reject({ error, message: "Error", isSuccess: false })
     }
   })
 
   getUser = () => new Promise(async (resolve, reject) => {
     try {
-      const res = await UserSchema.findOne({ _id: this.#id }).populate({
-        path: 'jobFavourite',
-        populate: {
-          path: 'jobId', populate: {
-            path: 'idCompany'
+      const res = await UserSchema.findOne({ _id: this.#id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId',
+            populate: {
+              path: 'idCompany',
+            }
           }
-        }
-      })
-      let company = []
-      if (res) {
-        company = await companySchema.find({ idUser: this.#id }).populate({
-          path: 'idUser',
         })
-      }
-      let result = { ...res._doc, company: company ? company[0] : {} }
+        .populate("idCompany")
+
+      // let company = []
+      // if (res) {
+      //   company = await companySchema.find({ idUser: this.#id }).populate({
+      //     path: 'idUser',
+      //   })
+      // // }
+      // let result = { ...res._doc, company: company ? company[0] : {} }
+      let result = { ...res._doc }
       resolve(result)
     } catch (error) {
-      console.log(err)
-      reject(err)
+      //(error)
+      reject(error)
     }
   })
 
@@ -265,7 +272,7 @@ module.exports = class User {
         }
       }
 
-      console.log(this);
+      //(this);
       if (this.#phone) {
         const checkPhone = await UserSchema.findOne({ $and: [{ phone: this.#phone }, { _id: { $ne: this.#id } }] })
 
@@ -284,7 +291,7 @@ module.exports = class User {
       await UserSchema.updateOne({ _id: this.#id }, { ...newUser })
       resolve({ message: "Cập nhật thông tin thành công !", isSuccess: true })
     } catch (error) {
-      console.log(error)
+      //(error)
       reject({ message: "Lỗi từ server", isSuccess: false })
     }
   })
@@ -294,7 +301,7 @@ module.exports = class User {
       await UserSchema.updateOne({ _id: this.#id }, { avatar: this.#avatar })
       resolve({ message: "Cập nhật avatar thành công !", isSuccess: true })
     } catch (error) {
-      console.log(error);
+      //(error);
       reject({ message: "Lỗi từ server", isSuccess: false })
     }
   })
@@ -302,7 +309,7 @@ module.exports = class User {
   // add list job favourite
   patchAddJobFavourite = (jobId) => new Promise(async (resolve, reject) => {
     try {
-      console.log("id job", jobId);
+      //("id job", jobId);
       const user = await UserSchema.findOne({ _id: this.#id })
       const isExistInListFavourite = user.jobFavourite.filter(item => {
         return JSON.stringify(item.jobId) === JSON.stringify(mongoose.Types.ObjectId(jobId))

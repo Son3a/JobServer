@@ -22,7 +22,7 @@ module.exports = require('express').Router()
   .put('/logout', verifyToken ,authController.logOut)
   .put("/change-password",verifyToken ,authController.changePasswordController)
   .put("/confirm-password", authController.confirmPassword)
-  .put("/edit-profile", [verifyToken, upload.Image.single("avatar")], authController.editProfile)
+  .put("/edit-profile", verifyToken, authController.editProfile)
   .post("/refresh-token", verifyTokenRefresh, authController.createRefreshToken)
   .patch("/logout", verifyToken, authController.logOut)
   .patch("/update-avatar",[verifyToken,upload.Image.single("avatar")],authController.updateAvatar);

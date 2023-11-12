@@ -14,7 +14,7 @@ module.exports.create = (req, res, next) => {
     )
       .create(accesstoken.message)
       .then(user => {
-        console.log('thanh cong!')
+        //('thanh cong!')
         res.status(200).json({ message: 'add new company success', success: true, data: user })
       })
       .catch(err => res.status(501).json({ message: err.message, success: err.isSuccess }))
@@ -66,7 +66,7 @@ module.exports.getPaging = (req, res, next) => {
 }
 
 module.exports.updateOne = (req, res, next) => {
-  const { _id, name, totalEmployee, type, about, phone, location, idUser, image, address, link } = req.body;
+  const { _id, name, totalEmployee, type, about, phone, location, image, address, link } = req.body;
   const company = new companySchema()
   company._id = _id
   company.name = name
@@ -75,7 +75,6 @@ module.exports.updateOne = (req, res, next) => {
   company.about = about
   company.phone = phone
   company.location = location
-  company.idUser = idUser
   company.address = address
   company.link = link
   company.image = image

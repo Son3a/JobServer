@@ -7,9 +7,9 @@ module.exports = {
       expiresIn: process.env.ACCESS_EXPIRESIN
     }, function (err, token) {
       if (err) {
-        console.log(err)
+        //(err)
       } else {
-        console.log('token '+ token)
+        //('token '+ token)
       }
     })
   },
@@ -18,9 +18,9 @@ module.exports = {
       expiresIn: process.env.REFRESH_EXPIRESIN
     }, function (err, token) {
       if (err) {
-        console.log(err)
+        //(err)
       } else {
-        console.log('token '+ token)
+        //('token '+ token)
       }
     })
   },
@@ -42,9 +42,9 @@ module.exports = {
         },
         token : tokenDevice
       });
-      console.log('result : ' + JSON.stringify(result));
+      //('result : ' + JSON.stringify(result));
     } catch (error) {
-      console.log(error);
+      //(error);
     }
   }
 }

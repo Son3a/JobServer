@@ -20,9 +20,9 @@ module.exports.get = async (req, res, next) =>
       },
       token : 'cFoB8aQkSouNWPRAOdnZVh:APA91bE_qofqWt-jltCupYX6xF5WSK-qzH-fuO2KpC-CyxMonbQ_Recirs1cSdgpQ6lSoVJXjjdwo7aRpdPVX-BK6JPjrP1pObQsouvlPKPVpLRmU6J_LNmB-o4ck5GKMLogWyQJdhUr'
     });
-    console.log('result : ' + JSON.stringify(result));
+    //('result : ' + JSON.stringify(result));
   } catch (error) {
-    console.log(error);
+    //(error);
   }
 
   return res.status(200).send('This is notification !');

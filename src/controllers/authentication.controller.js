@@ -6,14 +6,14 @@ const path = require('path')
 
 
 module.exports.create = (req, res, next) => {
-  const { name, email, password, role = "user", refreshToken = null } = req.body;
-  const avatar = "avatar.png"
-  console.log(req.body)
+  const { name, email, password, role, phone, refreshToken = null } = req.body;
+  const avatar = ""
+  //(req.body)
   new User(undefined,
     avatar,
     name,
     email.toLowerCase(),
-    undefined,
+    phone,
     password,
     role,
     refreshToken,
@@ -30,7 +30,7 @@ module.exports.create = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password, tokenDevice } = req.body;
-  console.log(password);
+  //(password);
   new User(undefined
     , undefined
     , undefined
@@ -47,7 +47,10 @@ module.exports.login = (req, res, next) => {
     .then(result => {
       res.status(200).json({ message: 'Đăng nhập thành công !', success: true, data: result })
     })
-    .catch(err => res.status(401).json({ message: err.message, success: err.isSuccess }))
+    .catch(err => {
+      console.log(err);
+      res.status(401).json({ message: err.message, success: err.isSuccess })
+    })
 }
 
 module.exports.logOut = (req, res, next) => {
@@ -63,11 +66,11 @@ module.exports.logOut = (req, res, next) => {
     , undefined)
     .logOut()
     .then(data => {
-      console.log(data)
+      //(data)
       return res.status(201).json({ message: "logout success", isSuccess: true })
     })
     .catch(err => {
-      console.log(err)
+      //(err)
       return res.status(401).json({ message: "logout success", isSuccess: false, err })
     }
     )
@@ -103,7 +106,7 @@ module.exports.updateOne = (req, res, next) => {
 }
 module.exports.changePasswordController = (req, res, next) => {
   const { password, newPassword } = req.body;
-  console.log(req.data)
+  //(req.data)
   new User(
     req.data._id,
     undefined,
@@ -119,7 +122,7 @@ module.exports.changePasswordController = (req, res, next) => {
     .changePassword(newPassword)
     .then(response => res.status(201).json(response))
     .catch(err => {
-      console.log(err)
+      //(err)
       return res.status(500).json(err)
     })
 }
@@ -211,16 +214,19 @@ module.exports.getUser = (req, res, next) => {
     undefined
   ).getUser()
     .then(result => res.status(200).json(result))
-    .catch(err => res.status(500).json(err))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err)
+    })
 }
 
 module.exports.editProfile = (req, res, next) => {
   const { _id } = req.data
-  const { name, email, phone } = req.body
-  const file = req.file
+  const { name, email, phone, avatar } = req.body
+
   new User(
     _id,
-    file?.filename,
+    avatar,
     name,
     email,
     phone,

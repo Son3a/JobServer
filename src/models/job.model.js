@@ -4,9 +4,12 @@ const applicationSchema = require('../schemas/application.schema')
 const { default: mongoose } = require('mongoose')
 const { verifyToken, getUserIdFromJWTToken } = require('../middlewares')
 const { chuanhoadaucau } = require('../services/standardVietNamWork')
+const { checkSalary } = require('../services/checkSalary')
 const occupationSchema = require('../schemas/occupation.schema')
 const { populate } = require('../schemas/user.schema')
 const { Mongoose } = require('mongoose')
+const axios = require('axios')
+
 module.exports = class Job {
   id
   #name
@@ -45,14 +48,14 @@ module.exports = class Job {
       try {
         const company = await companySchema.findById(this.#idCompany)
         const occupation = await occupationSchema.findById(this.#idOccupation)
-        console.log(company, occupation)
+        //(company, occupation)
         if (company == null || company.isDelete) reject({ message: "company is undefined" })
         if (occupation == null || occupation.isDelete) reject({ message: "Occupattion is undefined" })
         const job = new jobSchema()
         job.name = this.#name
         job.description = this.#description
         job.requirement = this.#requirement
-        job.postingDate = this.#postingDate
+        job.postingDate = new Date()
         job.deadline = this.#deadline
         job.salary = this.#salary
         job.locationWorking = this.#locationWorking
@@ -76,7 +79,7 @@ module.exports = class Job {
     return new Promise(async (resolve, reject) => {
       try {
         var jobFind = await jobSchema.findOne({ _id: id });
-        console.log(jobFind, id);
+        //(jobFind, id);
         if (!jobFind?.status) {
           reject({ message: "job already deleted" })
         } else {
@@ -116,12 +119,12 @@ module.exports = class Job {
     return new Promise((resolve, reject) => {
       try {
         const userId = getUserIdFromJWTToken(token)
-        //console.log(userId)
+        ////(userId)
         if (userId.success) {
           jobSchema.findById(id)
             .populate('idCompany')
             .populate('idOccupation')
-            //console.log('job ' + job);
+            ////('job ' + job);
             .then(async (job) => {
               job = job.toObject()
               var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
@@ -136,7 +139,7 @@ module.exports = class Job {
               else job.isApply = false;
               job['numApply'] = numApply.length;
               job['relatedJob'] = relatedJob
-              //console.log('job: ' + job)
+              ////('job: ' + job)
               return resolve(job)
             })
             .catch((err) => reject(err))
@@ -146,7 +149,7 @@ module.exports = class Job {
         jobSchema.findById(id)
           .populate('idCompany')
           .populate('idOccupation')
-          //console.log('job ' + job);
+          ////('job ' + job);
           .then(async (job) => {
             var numApply = await applicationSchema.find({ idJob: mongoose.Types.ObjectId(job._id) })
             var relatedJob = await jobSchema.find({
@@ -159,7 +162,7 @@ module.exports = class Job {
             job['numApply'] = numApply.length;
             job['isApply'] = false
             job['relatedJob'] = relatedJob
-            //console.log('job: ' + job)
+            ////('job: ' + job)
             return resolve(job)
           })
           .catch((err) => reject(err))
@@ -226,13 +229,13 @@ module.exports = class Job {
   }
   //xem tất cả job đã đăng(dành cho ng tuyển dụng)
   getAllJobModerator = (userId) => {
-    console.log(userId)
+    //(userId)
     return new Promise(async (resolve, reject) => {
       var company = await companySchema.findOne({ idUser: userId }).exec()
-      //console.log(company._id.toString())
+      ////(company._id.toString())
       jobSchema.find({ idCompany: company._id.toString() })
         .then((rel) => {
-          //console.log(rel)
+          ////(rel)
           return resolve(rel)
         })
         .catch((err) => reject(err))
@@ -241,6 +244,9 @@ module.exports = class Job {
   // vua tim kiem vua nhan theo id
   findJob = (condition) => {
     return new Promise(async (resolve, reject) => {
+      const convertMoney = await axios.get('https://api.currencyapi.com/v3/latest?apikey=cur_live_BSIxCVrijOkLVEz6JnrjwF8TEDP8cE2fznAVXecv&currencies=VND')
+      const unitMoney = convertMoney.data.data.VND.value
+
       jobSchema.find({ deadline: { $gt: new Date() }, status: true })
         .populate('idOccupation')
         .populate('idCompany')
@@ -250,45 +256,24 @@ module.exports = class Job {
               i.idCompany != null && i.idOccupation != null
             )
             &&
+            i.experience.toString().includes(condition.experience.toString())
+            &&
+            (
+              checkSalary(condition.salary.toString(), i.salary.toString(), unitMoney.toString())
+            )
+            &&
+            (
+              chuanhoadaucau(i.locationWorking.toLowerCase()).includes(chuanhoadaucau(condition.locationWorking.toString().toLowerCase()))
+            )
+            &&
             (
               chuanhoadaucau(i.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
               chuanhoadaucau(i.idCompany.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
               chuanhoadaucau(i.idOccupation.name.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
-              chuanhoadaucau(i.locationWorking.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase())) ||
-              chuanhoadaucau(i.requirement.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase()))
+              chuanhoadaucau(i.locationWorking.toLowerCase()).includes(chuanhoadaucau(condition.key.toString().toLowerCase()))
             )
           );
-          for (let i in condition) {
-            switch (i) {
-              case 'locationWorking':
-                if (condition[i].length > 0) {
-                  var tmpArray = [];
-                  for (let tmp = 0; tmp < condition[i].length; tmp++) {
-                    condition[i][tmp] = chuanhoadaucau(condition[i][tmp]).toLowerCase();
-                    for (let relTmp of rel) {
-                      if (chuanhoadaucau(relTmp.locationWorking).toLowerCase().includes(condition[i][tmp])) {
-                        tmpArray.push(relTmp);
-                      }
-                    }
-                  }
-                  rel = tmpArray;
-                  //rel = rel.filter(item => condition[i].includes(chuanhoadaucau(item.locationWorking).toLowerCase()))
-                }
-                break;
-              case 'idCompany':
-                if (condition[i].length > 0) {
-                  rel = rel.filter(item => condition[i].includes(item.idCompany._id.toString()))
-                }
-                break;
-              case 'idOccupation':
-                if (condition[i].length > 0) {
-                  rel = rel.filter(item => condition[i].includes(item.idOccupation._id.toString()))
-                }
-                break;
-              default:
-                break;
-            }
-          }
+          //(condition.experience)
           resolve(rel);
         })
         .catch((err) => reject(err))
@@ -368,7 +353,7 @@ module.exports = class Job {
         var applies = await applicationSchema.find({})
           .populate('idJob')
         applies = applies.filter(i => i.idJob != null)
-        //console.log(applies)
+        ////(applies)
         var availableCompanies = await companySchema.find({ isDelete: false })
         availableCompanies = availableCompanies.map(i => i._id.toString())
         var availableOccupation = await occupationSchema.find({ isDelete: false })
@@ -396,7 +381,7 @@ module.exports = class Job {
         var delOcc = await occupationSchema.find({ isDelete: false })
         delOcc = delOcc.map(i => i._id)
         var totalJob = await jobSchema.find({ status: true, deadline: { $gt: new Date() }, idCompany: { $in: delCom }, idOccupation: { $in: delOcc } })
-        console.log(totalJob)
+        //(totalJob)
         switch (type) {
           case 'month':
             for (let i = 0; i < 12; i++) {
