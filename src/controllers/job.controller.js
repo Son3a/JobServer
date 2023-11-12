@@ -122,6 +122,7 @@ module.exports.getAllJobModerator = (req, res, next) => {
     const accessToken = token.split(" ")[1]
     try {
       var decode = jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY)
+      console.log(decode._id);
       if (decode) {
         ////(decode)
         new Job()

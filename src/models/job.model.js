@@ -9,6 +9,7 @@ const occupationSchema = require('../schemas/occupation.schema')
 const { populate } = require('../schemas/user.schema')
 const { Mongoose } = require('mongoose')
 const axios = require('axios')
+const userSchema = require('../schemas/user.schema')
 
 module.exports = class Job {
   id
@@ -231,9 +232,10 @@ module.exports = class Job {
   getAllJobModerator = (userId) => {
     //(userId)
     return new Promise(async (resolve, reject) => {
-      var company = await companySchema.findOne({ idUser: userId }).exec()
+      var user = await userSchema.findOne({ _id: userId }).exec()
+      console.log(user);
       ////(company._id.toString())
-      jobSchema.find({ idCompany: company._id.toString() })
+      jobSchema.find({ idCompany: user.idCompany.toString() })
         .then((rel) => {
           ////(rel)
           return resolve(rel)
