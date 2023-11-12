@@ -160,6 +160,7 @@ module.exports = class User {
     try {
       const user = await UserSchema.findOne({ _id: this.#id })
       if (user) {
+        console.log(this.#password + '\n' + user.password);
         const isMatch = bcrypt.compareSync(this.#password, user.password);
         const hashPassword = bcrypt.hashSync(newPassword, saltRounds);
 
@@ -174,8 +175,8 @@ module.exports = class User {
         reject({ message: "Không có người này, token bị sai !", isSuccess: false })
       }
     } catch (error) {
-      //(error)
-      return reject({ message: "Lỗi server", err: err })
+      //console.log(error.message);
+      return reject({ message: "Lỗi server", err: error })
     }
   })
 

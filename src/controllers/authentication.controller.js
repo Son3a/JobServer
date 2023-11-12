@@ -113,8 +113,9 @@ module.exports.changePasswordController = (req, res, next) => {
     undefined,
     undefined,
     undefined,
-    undefined,
     password,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined
