@@ -63,6 +63,55 @@ module.exports = class User {
       .catch(err => reject(err))
   })
 
+  loginWithGoogle = () => new Promise(async (resolve, reject) => {
+    if (this.#email === '') {
+      return reject({ message: 'not empty email or password' })
+    }
+    const user = await UserSchema.findOne({ email: this.#email });
+
+    if (user) {
+      let newAccessToken = jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: process.env.ACCESS_EXPIRESIN
+      })
+      await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+      resolve(await UserSchema.findById({ _id: user._id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId'
+          }
+        })
+        .populate("idCompany"))
+    } else {
+      const user = new UserSchema()
+      user.name = this.#name
+      user.avatar = this.#avatar
+      user.phone = null
+      user.email = this.#email
+      user.role = 'user'
+      user.refreshToken = null
+      user.confirmPasswordCode = null
+
+      const hash = bcrypt.hashSync(this.#password, saltRounds);
+      user.password = hash;
+
+      const newUser = user.save()
+      let newAccessToken = jwt.sign({ _id: newUser._id, role: newUser.role }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: process.env.ACCESS_EXPIRESIN
+      })
+      await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+
+      resolve(await UserSchema.findById({ _id: user._id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId'
+          }
+        })
+        .populate("idCompany"))
+    }
+  })
+
   login = () => new Promise(async (resolve, reject) => {
     new Promise((resolve, reject) => {
       if (this.#email === '' || this.#password === '') {

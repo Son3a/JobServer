@@ -8,6 +8,7 @@ const { upload } = require('../services/uploadImage.service')
 
 module.exports = require('express').Router()
   .post("/login", authController.login)
+  .post("/login-with-google", authController.loginWithGoogle)
   .post("/register",authController.create)
   .post("/forgot-password", authController.forgotPassword)
   .get("/all", authController.getAll)
