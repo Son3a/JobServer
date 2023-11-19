@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 const { genaralAccessToken, genaralRefreshToken } = require('../utils');
 const { SendMailText } = require('../services/sendmail.service');
 const companySchema = require('../schemas/company.schema');
+const applicationSchema = require('../schemas/application.schema')
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
 const occupationSchema = require('../schemas/occupation.schema');
@@ -74,14 +75,31 @@ module.exports = class User {
         expiresIn: process.env.ACCESS_EXPIRESIN
       })
       await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-      resolve(await UserSchema.findById({ _id: user._id })
+
+      //get list application by userId
+      const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user.id) }).select('_id')
+      // const page_limit = process.env.PAGE_LIMIT
+      // const applies_total = listCV.length
+      // const page_total = Math.ceil(applies_total / page_limit)
+      // if (page == undefined) {
+      //   listCV = result.slice(0, listCV)
+      // }
+      // page = Number.parseInt(page)
+      // if (page >= 0 && page <= page_total) {
+      //   listCV = listCV.slice(page_limit * page, page_limit * (page + 1) - 1)
+      // }
+      // else reject({ message: "can't get list application" })
+
+      const data = await UserSchema.findById({ _id: user._id })
         .populate({
           path: 'jobFavourite',
           populate: {
             path: 'jobId'
           }
         })
-        .populate("idCompany"))
+        .populate("idCompany");
+
+      resolve({ user: data, listCV })
     } else {
       const user = new UserSchema()
       user.name = this.#name
@@ -101,14 +119,16 @@ module.exports = class User {
       })
       await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
 
-      resolve(await UserSchema.findById({ _id: user._id })
+      const data = await UserSchema.findById({ _id: user._id })
         .populate({
           path: 'jobFavourite',
           populate: {
             path: 'jobId'
           }
         })
-        .populate("idCompany"))
+        .populate("idCompany");
+
+      resolve({ user: data, listCV: null })
     }
   })
 
@@ -133,15 +153,31 @@ module.exports = class User {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-          resolve(await UserSchema.findById({ _id: user._id })
+
+          //get list application by userId
+          const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user.id) }).select('_id')
+          // const page_limit = process.env.PAGE_LIMIT
+          // const applies_total = listCV.length
+          // const page_total = Math.ceil(applies_total / page_limit)
+          // if (page == undefined) {
+          //   listCV = result.slice(0, listCV)
+          // }
+          // page = Number.parseInt(page)
+          // if (page >= 0 && page <= page_total) {
+          //   listCV = listCV.slice(page_limit * page, page_limit * (page + 1) - 1)
+          // }
+          // else reject({ message: "can't get list application" })
+
+          var data = await UserSchema.findById({ _id: user._id })
             .populate({
               path: 'jobFavourite',
               populate: {
                 path: 'jobId'
               }
             })
-            .populate("idCompany"))
+            .populate("idCompany");
 
+          resolve({ user: data, listCV })
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
         }
