@@ -101,7 +101,7 @@ module.exports = class User {
 
       resolve({ user: data, listCV })
     } else {
-      const user = new UserSchema()
+      const userSchema = new UserSchema()
       user.name = this.#name
       user.avatar = this.#avatar
       user.phone = null
@@ -113,7 +113,7 @@ module.exports = class User {
       const hash = bcrypt.hashSync(this.#password, saltRounds);
       user.password = hash;
 
-      const newUser = user.save()
+      const newUser = await userSchema.save();
       let newAccessToken = jwt.sign({ _id: newUser._id, role: newUser.role }, process.env.SECRET_TOKEN_KEY, {
         expiresIn: process.env.ACCESS_EXPIRESIN
       })
