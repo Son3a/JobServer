@@ -91,7 +91,7 @@ module.exports = class User {
       user.role = 'user'
       user.refreshToken = null
       user.confirmPasswordCode = null
-
+      user.tokenDevice = null
       const hash = bcrypt.hashSync(this.#password, saltRounds);
       user.password = hash;
 
