@@ -31,6 +31,7 @@ module.exports.create = (req, res, next) => {
 module.exports.loginWithGoogle = (req, res, next) => {
   const { email, password, tokenDevice = null, avatar, name } = req.body;
   //(password);
+  console.log(name);
   new User(undefined
     , avatar
     , name

@@ -101,25 +101,26 @@ module.exports = class User {
 
       resolve({ user: data, listCV })
     } else {
+      
       const userSchema = new UserSchema()
-      user.name = this.#name
-      user.avatar = this.#avatar
-      user.phone = null
-      user.email = this.#email
-      user.role = 'user'
-      user.refreshToken = null
-      user.confirmPasswordCode = null
-      user.tokenDevice = null
+      userSchema.name = this.#name
+      userSchema.avatar = this.#avatar
+      userSchema.phone = null
+      userSchema.email = this.#email
+      userSchema.role = 'user'
+      userSchema.refreshToken = null
+      userSchema.confirmPasswordCode = null
+      userSchema.tokenDevice = null
       const hash = bcrypt.hashSync(this.#password, saltRounds);
-      user.password = hash;
+      userSchema.password = hash;
 
       const newUser = await userSchema.save();
       let newAccessToken = jwt.sign({ _id: newUser._id, role: newUser.role }, process.env.SECRET_TOKEN_KEY, {
         expiresIn: process.env.ACCESS_EXPIRESIN
       })
-      await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+      await UserSchema.updateOne({ _id: newUser._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
 
-      const data = await UserSchema.findById({ _id: user._id })
+      const data = await UserSchema.findById({ _id: newUser._id })
         .populate({
           path: 'jobFavourite',
           populate: {
