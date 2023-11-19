@@ -105,6 +105,7 @@ module.exports = class User {
             match: { status: true }
           }
         })
+        .populate('idCompany')
 
       resolve({ user: data, listCV })
     } else {
@@ -136,6 +137,7 @@ module.exports = class User {
             match: { status: true }
           }
         })
+        .populate('idCompany')
 
       resolve({ user: data, listCV: null })
     }
@@ -192,6 +194,7 @@ module.exports = class User {
                 match: { status: true }
               }
             })
+            .populate('idCompany')
 
           resolve({ user: data, listCV })
         } else {
