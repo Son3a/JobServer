@@ -478,4 +478,29 @@ module.exports = class Job {
       }
     })
   }
+  getJobSavedAndApplied = (userId) => {
+    return new Promise(async (resolve, reject) => {
+
+      try {
+        const jobSaved = await userSchema.findOne({ _id: userId })
+        .select("jobFavourite")
+          .populate({
+            path: 'jobFavourite',
+            populate: {
+              path: 'jobId',
+              select:'_id',
+              match: { status: true }
+            }
+          })
+        const jobApplied = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(userId) })
+          .select('idJob')
+          .populate('idJob', { status: true })
+
+        resolve({ jobSaved, jobApplied })
+      } catch (error) {
+        console.log(error);
+        reject(error)
+      }
+    })
+  }
 }

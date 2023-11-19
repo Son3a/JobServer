@@ -77,7 +77,13 @@ module.exports = class User {
       await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
 
       //get list application by userId
-      const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user.id) }).select('_id')
+      const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user._id) })
+        .select('idJob')
+        .populate({
+          path: 'idJob',
+          select: '_id',
+          match: { status: true }
+        })
       // const page_limit = process.env.PAGE_LIMIT
       // const applies_total = listCV.length
       // const page_total = Math.ceil(applies_total / page_limit)
@@ -90,18 +96,19 @@ module.exports = class User {
       // }
       // else reject({ message: "can't get list application" })
 
-      const data = await UserSchema.findById({ _id: user._id })
+      var data = await UserSchema.findById({ _id: user._id })
         .populate({
           path: 'jobFavourite',
           populate: {
-            path: 'jobId'
+            path: 'jobId',
+            select: '_id',
+            match: { status: true }
           }
         })
-        .populate("idCompany");
 
       resolve({ user: data, listCV })
     } else {
-      
+
       const userSchema = new UserSchema()
       userSchema.name = this.#name
       userSchema.avatar = this.#avatar
@@ -120,14 +127,15 @@ module.exports = class User {
       })
       await UserSchema.updateOne({ _id: newUser._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
 
-      const data = await UserSchema.findById({ _id: newUser._id })
+      var data = await UserSchema.findById({ _id: newUser._id })
         .populate({
           path: 'jobFavourite',
           populate: {
-            path: 'jobId'
+            path: 'jobId',
+            select: '_id',
+            match: { status: true }
           }
         })
-        .populate("idCompany");
 
       resolve({ user: data, listCV: null })
     }
@@ -156,7 +164,13 @@ module.exports = class User {
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
 
           //get list application by userId
-          const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user.id) }).select('_id')
+          const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user._id) })
+            .select('idJob')
+            .populate({
+              path: 'idJob',
+              select: '_id',
+              match: { status: true }
+            })
           // const page_limit = process.env.PAGE_LIMIT
           // const applies_total = listCV.length
           // const page_total = Math.ceil(applies_total / page_limit)
@@ -173,10 +187,11 @@ module.exports = class User {
             .populate({
               path: 'jobFavourite',
               populate: {
-                path: 'jobId'
+                path: 'jobId',
+                select: '_id',
+                match: { status: true }
               }
             })
-            .populate("idCompany");
 
           resolve({ user: data, listCV })
         } else {
