@@ -29,7 +29,7 @@ module.exports.create = (req, res, next) => {
 }
 
 module.exports.loginWithGoogle = (req, res, next) => {
-  const { email, password, tokenDevice, avatar, name } = req.body;
+  const { email, password, tokenDevice = null, avatar, name } = req.body;
   //(password);
   new User(undefined
     , avatar
