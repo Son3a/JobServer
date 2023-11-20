@@ -352,6 +352,9 @@ module.exports = class User {
         })
         .populate("idCompany")
 
+      res.jobFavourite.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      })
       // let company = []
       // if (res) {
       //   company = await companySchema.find({ idUser: this.#id }).populate({

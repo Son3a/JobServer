@@ -116,7 +116,8 @@ module.exports = class ApplicationModel {
         return new Promise(async (resolve, reject) => {
             try {
                 const result = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(userId) })
-                    .populate({ path: 'idJob', populate: { path: 'idCompany' } });
+                    .populate({ path: 'idJob', populate: { path: 'idCompany' } })
+                    .sort({ submitDate: -1 });
                 const page_limit = process.env.PAGE_LIMIT
                 const applies_total = result.length
                 const page_total = Math.ceil(applies_total / page_limit)
