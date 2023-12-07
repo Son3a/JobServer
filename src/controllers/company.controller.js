@@ -7,6 +7,7 @@ module.exports.create = (req, res, next) => {
   const token = req.header('Authorization')
   const accesstoken = getUserIdFromJWTToken(token)
   const { name, totalEmployee, type, about, phone, location, link, address, image } = req.body;
+  
   if (accesstoken.success == false) res.status(501).json({ message: 'User is not defined', success: false })
   else {
     new Company(
