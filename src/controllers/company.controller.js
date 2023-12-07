@@ -7,11 +7,16 @@ module.exports.create = (req, res, next) => {
   const token = req.header('Authorization')
   const accesstoken = getUserIdFromJWTToken(token)
   const { name, totalEmployee, type, about, phone, location, link, address, image } = req.body;
-  
+  var imageData;
+  if(image){
+    imageData = image
+  } else {
+    imageData = "https://i.pinimg.com/736x/94/e9/74/94e974368873b7e323e68b0af7028ec5.jpg"
+  }
   if (accesstoken.success == false) res.status(501).json({ message: 'User is not defined', success: false })
   else {
     new Company(
-      undefined, name, totalEmployee, null, about, null, false, null, accesstoken.message, address, null, link
+      undefined, name, totalEmployee, null, about, null, false, null, address, imageData, link
     )
       .create(accesstoken.message)
       .then(user => {
