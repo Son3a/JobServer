@@ -60,7 +60,16 @@ module.exports = class User {
     user.password = hash;
 
     user.save()
-      .then(user => resolve(user))
+      .then(async (user) => {
+        let newAccessToken = jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_TOKEN_KEY, {
+          expiresIn: process.env.ACCESS_EXPIRESIN
+        })
+
+        await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken })
+
+        user.refreshToken = newAccessToken
+        resolve(user)
+      })
       .catch(err => reject(err))
   })
 
