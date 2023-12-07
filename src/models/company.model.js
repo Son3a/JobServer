@@ -14,7 +14,6 @@ module.exports = class Job {
   #address
   #image
   #link
-  #idUser
   #isDelete
   constructor(id, name, totalEmployee, type, about, phone, isDelete, location, address, image, link) {
     this.id = id

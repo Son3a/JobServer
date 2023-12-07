@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken');
 const { genaralAccessToken, genaralRefreshToken } = require('../utils');
 const { SendMailText } = require('../services/sendmail.service');
 const companySchema = require('../schemas/company.schema');
+const applicationSchema = require('../schemas/application.schema')
 const bcrypt = require('bcrypt');
 const { default: mongoose } = require('mongoose');
 const occupationSchema = require('../schemas/occupation.schema');
@@ -63,6 +64,85 @@ module.exports = class User {
       .catch(err => reject(err))
   })
 
+  loginWithGoogle = () => new Promise(async (resolve, reject) => {
+    if (this.#email === '') {
+      return reject({ message: 'not empty email or password' })
+    }
+    const user = await UserSchema.findOne({ email: this.#email });
+
+    if (user) {
+      let newAccessToken = jwt.sign({ _id: user._id, role: user.role }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: process.env.ACCESS_EXPIRESIN
+      })
+      await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+
+      //get list application by userId
+      const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user._id) })
+        .select('idJob')
+        .populate({
+          path: 'idJob',
+          select: '_id',
+          match: { status: true }
+        })
+      // const page_limit = process.env.PAGE_LIMIT
+      // const applies_total = listCV.length
+      // const page_total = Math.ceil(applies_total / page_limit)
+      // if (page == undefined) {
+      //   listCV = result.slice(0, listCV)
+      // }
+      // page = Number.parseInt(page)
+      // if (page >= 0 && page <= page_total) {
+      //   listCV = listCV.slice(page_limit * page, page_limit * (page + 1) - 1)
+      // }
+      // else reject({ message: "can't get list application" })
+
+      var data = await UserSchema.findById({ _id: user._id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId',
+            select: '_id',
+            match: { status: true }
+          }
+        })
+        .populate('idCompany')
+
+      resolve({ user: data, listCV })
+    } else {
+
+      const userSchema = new UserSchema()
+      userSchema.name = this.#name
+      userSchema.avatar = this.#avatar
+      userSchema.phone = null
+      userSchema.email = this.#email
+      userSchema.role = 'user'
+      userSchema.refreshToken = null
+      userSchema.confirmPasswordCode = null
+      userSchema.tokenDevice = null
+      const hash = bcrypt.hashSync(this.#password, saltRounds);
+      userSchema.password = hash;
+
+      const newUser = await userSchema.save();
+      let newAccessToken = jwt.sign({ _id: newUser._id, role: newUser.role }, process.env.SECRET_TOKEN_KEY, {
+        expiresIn: process.env.ACCESS_EXPIRESIN
+      })
+      await UserSchema.updateOne({ _id: newUser._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
+
+      var data = await UserSchema.findById({ _id: newUser._id })
+        .populate({
+          path: 'jobFavourite',
+          populate: {
+            path: 'jobId',
+            select: '_id',
+            match: { status: true }
+          }
+        })
+        .populate('idCompany')
+
+      resolve({ user: data, listCV: null })
+    }
+  })
+
   login = () => new Promise(async (resolve, reject) => {
     new Promise((resolve, reject) => {
       if (this.#email === '' || this.#password === '') {
@@ -84,15 +164,39 @@ module.exports = class User {
             expiresIn: process.env.ACCESS_EXPIRESIN
           })
           await UserSchema.updateOne({ _id: user._id }, { refreshToken: newAccessToken, tokenDevice: this.#tokenDevice })
-          resolve(await UserSchema.findById({ _id: user._id })
+
+          //get list application by userId
+          const listCV = await applicationSchema.find({ idJobSeeker: mongoose.Types.ObjectId(user._id) })
+            .select('idJob')
+            .populate({
+              path: 'idJob',
+              select: '_id',
+              match: { status: true }
+            })
+          // const page_limit = process.env.PAGE_LIMIT
+          // const applies_total = listCV.length
+          // const page_total = Math.ceil(applies_total / page_limit)
+          // if (page == undefined) {
+          //   listCV = result.slice(0, listCV)
+          // }
+          // page = Number.parseInt(page)
+          // if (page >= 0 && page <= page_total) {
+          //   listCV = listCV.slice(page_limit * page, page_limit * (page + 1) - 1)
+          // }
+          // else reject({ message: "can't get list application" })
+
+          var data = await UserSchema.findById({ _id: user._id })
             .populate({
               path: 'jobFavourite',
               populate: {
-                path: 'jobId'
+                path: 'jobId',
+                select: '_id',
+                match: { status: true }
               }
             })
-            .populate("idCompany"))
+            .populate('idCompany')
 
+          resolve({ user: data, listCV })
         } else {
           reject({ message: "Tài khoản hoặc mật khẩu không chính xác", isSuccess: false })
         }
@@ -160,6 +264,7 @@ module.exports = class User {
     try {
       const user = await UserSchema.findOne({ _id: this.#id })
       if (user) {
+        console.log(this.#password + '\n' + user.password);
         const isMatch = bcrypt.compareSync(this.#password, user.password);
         const hashPassword = bcrypt.hashSync(newPassword, saltRounds);
 
@@ -174,8 +279,8 @@ module.exports = class User {
         reject({ message: "Không có người này, token bị sai !", isSuccess: false })
       }
     } catch (error) {
-      //(error)
-      return reject({ message: "Lỗi server", err: err })
+      //console.log(error.message);
+      return reject({ message: "Lỗi server", err: error })
     }
   })
 
@@ -247,6 +352,9 @@ module.exports = class User {
         })
         .populate("idCompany")
 
+      res.jobFavourite.sort(function (a, b) {
+        return new Date(b.createdAt) - new Date(a.createdAt)
+      })
       // let company = []
       // if (res) {
       //   company = await companySchema.find({ idUser: this.#id }).populate({

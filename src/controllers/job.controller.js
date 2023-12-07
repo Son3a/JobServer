@@ -110,10 +110,10 @@ module.exports.getSearchJob = (req, res, next) => {
   new Job()
     .findJob(condition)
     .then((rel) => { return res.status(200).json({ count: rel.length, success: true, message: "search job success", data: rel }) })
-    .catch(err => { 
+    .catch(err => {
       //(err);
-      res.status(404).json({ message: "search job fail", success: false, error: err.message }) 
-  })
+      res.status(404).json({ message: "search job fail", success: false, error: err.message })
+    })
 }
 //xem tat ca cac job da dang doi' voi NHA TUYEN DUNG
 module.exports.getAllJobModerator = (req, res, next) => {
@@ -122,6 +122,7 @@ module.exports.getAllJobModerator = (req, res, next) => {
     const accessToken = token.split(" ")[1]
     try {
       var decode = jwt.verify(accessToken, process.env.SECRET_TOKEN_KEY)
+      console.log(decode._id);
       if (decode) {
         ////(decode)
         new Job()
@@ -200,6 +201,14 @@ module.exports.applicationByOccupation = (req, res, next) => {
 }
 module.exports.mostApplicationJob = (req, res, next) => {
   new Job().mostApplicationJob('month')
+    .then((data) => { res.status(200).json({ message: "get success", data: data, isSuccess: true }) })
+    .catch((err) => { res.status(500).json({ message: err.message, isSuccess: false }) })
+}
+
+module.exports.getJobSavedAndApplied = (req, res, next) => {
+  const { _id } = req.data
+  new Job()
+    .getJobSavedAndApplied(_id)
     .then((data) => { res.status(200).json({ message: "get success", data: data, isSuccess: true }) })
     .catch((err) => { res.status(500).json({ message: err.message, isSuccess: false }) })
 }

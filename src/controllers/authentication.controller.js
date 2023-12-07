@@ -28,6 +28,32 @@ module.exports.create = (req, res, next) => {
     .catch(err => res.status(401).json({ message: err.message, success: err.isSuccess }))
 }
 
+module.exports.loginWithGoogle = (req, res, next) => {
+  const { email, password, tokenDevice = null, avatar, name } = req.body;
+  //(password);
+  console.log(name);
+  new User(undefined
+    , avatar
+    , name
+    , email
+    , undefined
+    , password
+    , undefined
+    , undefined
+    , undefined
+    , undefined
+    , tokenDevice
+  )
+    .loginWithGoogle()
+    .then(result => {
+      res.status(200).json({ message: 'Đăng nhập thành công !', success: true, data: result })
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(401).json({ message: err.message, success: err.isSuccess })
+    })
+}
+
 module.exports.login = (req, res, next) => {
   const { email, password, tokenDevice } = req.body;
   //(password);
@@ -113,8 +139,9 @@ module.exports.changePasswordController = (req, res, next) => {
     undefined,
     undefined,
     undefined,
-    undefined,
     password,
+    undefined,
+    undefined,
     undefined,
     undefined,
     undefined
