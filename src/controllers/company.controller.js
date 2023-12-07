@@ -2,26 +2,30 @@
 const { getUserIdFromJWTToken } = require('../middlewares');
 const Company = require('../models/company.model');
 const companySchema = require('../schemas/company.schema');
+const UserSchema = require('../schemas/user.schema')
 
 module.exports.create = (req, res, next) => {
   const token = req.header('Authorization')
   const accesstoken = getUserIdFromJWTToken(token)
   const { name, totalEmployee, type, about, phone, location, link, address, image } = req.body;
   var imageData;
-  if(image){
+  if (image) {
     imageData = image
   } else {
     imageData = "https://i.pinimg.com/736x/94/e9/74/94e974368873b7e323e68b0af7028ec5.jpg"
   }
   if (accesstoken.success == false) res.status(501).json({ message: 'User is not defined', success: false })
   else {
+    console.log(accesstoken.message);
     new Company(
       undefined, name, totalEmployee, null, about, null, false, null, address, imageData, link
     )
       .create(accesstoken.message)
-      .then(user => {
+      .then(async (company) => {
         //('thanh cong!')
-        res.status(200).json({ message: 'add new company success', success: true, data: user })
+        await UserSchema.updateOne({ _id: accesstoken.message }, { idCompany: company._id })
+
+        res.status(200).json({ message: 'add new company success', success: true, data: company })
       })
       .catch(err => res.status(501).json({ message: err.message, success: err.isSuccess }))
   }
