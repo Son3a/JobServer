@@ -14,9 +14,8 @@ module.exports = class Job {
   #address
   #image
   #link
-  #idUser
   #isDelete
-  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, address, image, link, idUser) {
+  constructor(id, name, totalEmployee, type, about, phone, isDelete, location, address, image, link) {
     this.id = id
     this.#name = name
     this.#totalEmployee = totalEmployee
@@ -28,7 +27,6 @@ module.exports = class Job {
     this.#address = address
     this.#link = link
     this.#image = image
-    this.idUser = idUser
   }
   create = () => {
     return new Promise(async (resolve, reject) => {
@@ -45,7 +43,6 @@ module.exports = class Job {
           com.link = this.#link
           com.address = this.#address
           com.image = this.#image
-          com.idUser = this.#idUser
           com.save()
             .then((rel) => resolve(rel))
             .catch((err) => reject(err))

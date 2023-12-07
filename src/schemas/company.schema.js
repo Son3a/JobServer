@@ -44,11 +44,6 @@ const companySchema = new mongoose.Schema({
   },
   address: {
     type: String
-  },
-  idUser: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    require: true
   }
 })
 

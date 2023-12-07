@@ -10,7 +10,7 @@ module.exports.create = (req, res, next) => {
   if (accesstoken.success == false) res.status(501).json({ message: 'User is not defined', success: false })
   else {
     new Company(
-      undefined, name, totalEmployee, null, about, null, false, null, accesstoken.message, address, null, link, idUser
+      undefined, name, totalEmployee, null, about, null, false, null, accesstoken.message, address, null, link
     )
       .create(accesstoken.message)
       .then(user => {
