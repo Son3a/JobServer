@@ -3,7 +3,7 @@
 This is my personal project
 
 ## Tech Stack
-- Nodejs express, MonggoDB
+- Nodejs express, MongoDB
 
 ## Deploy
 - https://job-seeker-server.onrender.com/
